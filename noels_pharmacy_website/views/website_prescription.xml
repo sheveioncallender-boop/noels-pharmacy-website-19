@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_prescriptions" name="Noel's Prescription Requests">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Prescription Requests | Noel's Pharmacy</t>
+            <t t-set="meta_description">Upload a prescription securely for pharmacist review by Noel's Pharmacy in Chaguanas.</t>
+            <div id="wrap" class="oe_structure noels-prescription-page">
+                <section class="noels-prescription-hero">
+                    <div class="container-xl noels-prescription-hero__grid">
+                        <div>
+                            <div class="noels-breadcrumb"><a href="/">Home</a><i class="fa fa-angle-right"/><span>Prescriptions</span></div>
+                            <span class="noels-eyebrow noels-eyebrow--light">Secure online request</span>
+                            <h1>Send your prescription from wherever you are.</h1>
+                            <p>Upload clear images or PDFs for pharmacist review, then choose store pickup or available delivery.</p>
+                            <div class="noels-prescription-hero__checks"><span><i class="fa fa-lock"/> Secure submission</span><span><i class="fa fa-user-md"/> Pharmacist review</span><span><i class="fa fa-phone"/> Personal confirmation</span></div>
+                        </div>
+                        <div class="noels-rx-visual"><div class="noels-rx-visual__sheet"><span>Rx</span><i class="fa fa-check-circle"/><b>Review request</b><small>Clear. Private. Convenient.</small></div><div class="noels-rx-visual__pill noels-rx-visual__pill--one"/><div class="noels-rx-visual__pill noels-rx-visual__pill--two"/></div>
+                    </div>
+                </section>
+
+                <section class="noels-section noels-prescription-form-section">
+                    <div class="container-xl noels-prescription-layout">
+                        <aside class="noels-prescription-aside">
+                            <span class="noels-eyebrow">Before you begin</span>
+                            <h2>A few quick checks.</h2>
+                            <ol><li><b>Use a clear image.</b><span>Make sure the full prescription and all writing are visible.</span></li><li><b>Add every page.</b><span>You can upload up to five PDF or image files.</span></li><li><b>Check your number.</b><span>We use it to confirm availability and the next step.</span></li><li><b>Wait for confirmation.</b><span>Submission does not mean the prescription is approved or ready.</span></li></ol>
+                            <div class="noels-help-card"><i class="fa fa-whatsapp"/><div><b>Need help before uploading?</b><a t-att-href="'https://wa.me/%s' % noels_whatsapp" target="_blank" rel="noopener">WhatsApp <t t-out="noels_whatsapp_display"/></a></div></div>
+                        </aside>
+                        <div class="noels-form-card noels-prescription-form-card">
+                            <div class="noels-form-card__head"><span class="noels-eyebrow">Prescription request</span><h2>Tell us who this is for.</h2><p>Fields marked * are required.</p></div>
+                            <div t-if="form_error" class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"/> <t t-out="form_error"/></div>
+                            <form action="/prescriptions" method="post" enctype="multipart/form-data" class="noels-form" data-noels-prescription-form="1">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="noels-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"/></label></div>
+                                <fieldset><legend>Patient details</legend><div class="noels-form__row"><label>Patient full name *<input type="text" name="patient_name" required="required" autocomplete="name" t-att-value="form_data.get('patient_name', '')"/></label><label>Date of birth *<input type="date" name="date_of_birth" required="required" t-att-value="form_data.get('date_of_birth', '')"/></label></div><div class="noels-form__row"><label>Mobile number *<input type="tel" name="mobile" required="required" autocomplete="tel" t-att-value="form_data.get('mobile', '')"/></label><label>Email address<input type="email" name="email" autocomplete="email" t-att-value="form_data.get('email', '')"/></label></div></fieldset>
+                                <fieldset><legend>Prescription details</legend><div class="noels-form__row"><label>Doctor name<input type="text" name="doctor_name" t-att-value="form_data.get('doctor_name', '')"/></label><label>Prescription date<input type="date" name="prescription_date" t-att-value="form_data.get('prescription_date', '')"/></label></div><label>Notes for the pharmacy<textarea name="notes" rows="4" placeholder="Add anything that may help the pharmacy review your request" t-out="form_data.get('notes', '')"/></label></fieldset>
+                                <fieldset><legend>Upload prescription *</legend><label class="noels-upload-zone" data-noels-upload-zone="1"><input type="file" name="prescription_files" required="required" multiple="multiple" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" data-noels-upload-input="1"/><span class="noels-upload-zone__icon"><i class="fa fa-cloud-upload"/></span><b>Choose files or drag them here</b><small data-noels-upload-label="1">PDF, PNG, JPG or JPEG · Up to 5 files · 10 MB each</small></label></fieldset>
+                                <fieldset><legend>How would you prefer to receive it?</legend><div class="noels-choice-grid"><label class="noels-choice"><input type="radio" name="fulfillment" value="pickup" required="required" t-att-checked="form_data.get('fulfillment', 'pickup') == 'pickup'"/><span><i class="fa fa-shopping-bag"/><b>Store pickup</b><small>55 Rodney Road, Endeavour</small></span></label><label class="noels-choice"><input type="radio" name="fulfillment" value="delivery" required="required" t-att-checked="form_data.get('fulfillment') == 'delivery'"/><span><i class="fa fa-truck"/><b>Available delivery</b><small>Confirmed after review</small></span></label></div><label class="noels-delivery-address" data-noels-delivery-address="1">Delivery address<textarea name="delivery_address" rows="3" t-out="form_data.get('delivery_address', '')"/></label></fieldset>
+                                <label class="noels-consent"><input type="checkbox" name="consent" value="1" required="required" t-att-checked="bool(form_data.get('consent'))"/><span>I consent to Noel's securely using the submitted information and files to review this prescription request. I understand that submission is not approval to dispense and that the pharmacy may contact me for more information. *</span></label>
+                                <button type="submit" class="btn noels-btn noels-btn--primary noels-form-submit">Submit for pharmacist review <i class="fa fa-lock"/></button>
+                                <p class="noels-form-note"><i class="fa fa-shield"/> Your upload is stored inside Odoo and is available only to authorised staff.</p>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="prescription_thank_you" name="Prescription Request Thank You">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Prescription Received | Noel's Pharmacy</t>
+            <div id="wrap" class="oe_structure noels-result-page">
+                <div class="container-xl">
+                    <div class="noels-result-card noels-result-card--rx">
+                        <span class="noels-result-icon"><i class="fa fa-check"/></span>
+                        <span class="noels-eyebrow">Securely submitted</span>
+                        <h1>Your prescription request is with our team.</h1>
+                        <p>Reference <strong t-out="prescription_request.name"/> has been created. A pharmacist will review the information and Noel's will contact you before fulfilment.</p>
+                        <div class="noels-result-summary"><div><span>Status</span><b>Submitted</b></div><div><span>Preference</span><b t-out="'Store pickup' if prescription_request.fulfillment == 'pickup' else 'Available delivery'"/></div><div><span>Files</span><b><t t-out="len(prescription_request.attachment_ids)"/> received</b></div></div>
+                        <div class="noels-result-alert"><i class="fa fa-info-circle"/><span>Please do not travel to the store for collection until Noel's confirms that the request is ready.</span></div>
+                        <div><a href="/shop" class="btn noels-btn noels-btn--primary">Continue shopping</a><a t-if="request.env.user != request.website.user_id" href="/my/prescriptions" class="btn noels-btn noels-btn--ghost">Track my requests</a><a t-else="" href="/" class="btn noels-btn noels-btn--ghost">Back home</a></div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="noels_logo" name="Noel's Logo">
+        <a href="/" class="noels-logo" aria-label="Noel's Pharmacy home">
+            <img src="/noels_pharmacy_website/static/src/img/noels-logo.webp"
+                 alt="Noel's Pharmacy &amp; Wellness Center Ltd."/>
+        </a>
+    </template>
+
+    <template id="noels_website_layout" inherit_id="website.layout" name="Noel's Website Layout" priority="90">
+        <xpath expr="//head" position="inside">
+            <meta name="theme-color" content="#063f8c"/>
+            <link rel="icon" type="image/png" href="/noels_pharmacy_website/static/src/img/favicon.png"/>
+            <script type="application/ld+json">
+                {
+                  "@context": "https://schema.org",
+                  "@type": "Pharmacy",
+                  "name": "Noel's Pharmacy &amp; Wellness Center Ltd.",
+                  "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "55 Rodney Road",
+                    "addressLocality": "Endeavour, Chaguanas",
+                    "addressCountry": "TT"
+                  },
+                  "telephone": "+1-868-610-6635"
+                }
+            </script>
+        </xpath>
+
+        <xpath expr="//header[@id='top']" position="replace">
+            <header t-if="not no_header" id="top" class="noels-header" data-name="Header">
+                <t t-set="store_phone" t-value="request.website.noels_store_phone or '610-6635'"/>
+                <t t-set="wa_number" t-value="request.website.noels_whatsapp_number or '18687506635'"/>
+                <t t-set="wa_display" t-value="request.website.noels_whatsapp_display or '750-6635'"/>
+                <t t-set="website_sale_cart_quantity" t-value="request.session.get('website_sale_cart_quantity', request.cart.cart_quantity) or 0"/>
+                <div class="noels-utility">
+                    <div class="container-xl noels-utility__inner">
+                        <span class="noels-utility__promise">
+                            <i class="fa fa-heart-o" aria-hidden="true"/> Your health. Our priority.
+                        </span>
+                        <div class="noels-utility__links">
+                            <span><i class="fa fa-map-marker" aria-hidden="true"/> 55 Rodney Road, Endeavour</span>
+                            <a t-att-href="'tel:+1868%s' % store_phone.replace('-', '')">
+                                <i class="fa fa-phone" aria-hidden="true"/> <t t-out="store_phone"/>
+                            </a>
+                            <a t-att-href="'https://wa.me/%s' % wa_number" target="_blank" rel="noopener">
+                                <i class="fa fa-whatsapp" aria-hidden="true"/> <t t-out="wa_display"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-xl noels-mainbar">
+                    <t t-call="noels_pharmacy_website.noels_logo"/>
+                    <form class="noels-search" action="/shop" method="get" role="search">
+                        <i class="fa fa-search" aria-hidden="true"/>
+                        <input type="search" name="search" placeholder="Search products, brands or wellness needs..." aria-label="Search products"/>
+                        <button type="submit">Search</button>
+                    </form>
+                    <div class="noels-actions">
+                        <a href="/my/home" class="noels-action" aria-label="My account">
+                            <i class="fa fa-user-o" aria-hidden="true"/>
+                            <span><small>Welcome</small>My account</span>
+                        </a>
+                        <a href="/shop/cart" class="noels-action noels-cart" aria-label="Shopping cart">
+                            <i class="fa fa-shopping-bag" aria-hidden="true"/>
+                            <span><small>Shopping</small>Cart</span>
+                            <b class="noels-cart-count" t-out="website_sale_cart_quantity"/>
+                        </a>
+                        <button type="button" class="noels-menu-toggle" data-noels-menu-toggle="1" aria-label="Open menu" aria-expanded="false">
+                            <span/><span/><span/>
+                        </button>
+                    </div>
+                </div>
+                <nav class="noels-nav" aria-label="Main navigation">
+                    <div class="container-xl noels-nav__inner">
+                        <a href="/shop" class="noels-shop-all"><i class="fa fa-th-large" aria-hidden="true"/> Shop all products</a>
+                        <div class="noels-nav__links" data-noels-mobile-menu="1">
+                            <a href="/" t-att-class="'is-active' if request.httprequest.path == '/' else ''">Home</a>
+                            <a href="/shop" t-att-class="'is-active' if request.httprequest.path.startswith('/shop') else ''">Shop</a>
+                            <a href="/prescriptions" t-att-class="'is-active' if request.httprequest.path.startswith('/prescriptions') else ''">Prescriptions</a>
+                            <a href="/wellness" t-att-class="'is-active' if request.httprequest.path == '/wellness' else ''">Wellness</a>
+                            <a href="/pharmacy-services" t-att-class="'is-active' if request.httprequest.path == '/pharmacy-services' else ''">Services</a>
+                            <a href="/brands" t-att-class="'is-active' if request.httprequest.path.startswith('/brands') else ''">Brands</a>
+                            <a href="/about-us" t-att-class="'is-active' if request.httprequest.path == '/about-us' else ''">About</a>
+                            <a href="/contact-us" t-att-class="'is-active' if request.httprequest.path == '/contact-us' else ''">Contact</a>
+                            <div class="noels-mobile-only">
+                                <a t-att-href="'tel:+1868%s' % store_phone.replace('-', '')"><i class="fa fa-phone"/> Call <t t-out="store_phone"/></a>
+                                <a t-att-href="'https://wa.me/%s' % wa_number" target="_blank" rel="noopener"><i class="fa fa-whatsapp"/> WhatsApp <t t-out="wa_display"/></a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+        </xpath>
+
+        <xpath expr="//footer[@id='bottom']" position="replace">
+            <footer t-if="not no_footer" id="bottom" class="noels-footer" data-name="Footer">
+                <t t-set="store_phone" t-value="request.website.noels_store_phone or '610-6635'"/>
+                <t t-set="wa_number" t-value="request.website.noels_whatsapp_number or '18687506635'"/>
+                <t t-set="wa_display" t-value="request.website.noels_whatsapp_display or '750-6635'"/>
+                <section class="noels-footer-cta">
+                    <div class="container-xl noels-footer-cta__inner">
+                        <div>
+                            <span class="noels-eyebrow noels-eyebrow--light">Here when you need us</span>
+                            <h2>Health support, made more convenient.</h2>
+                        </div>
+                        <div class="noels-footer-cta__actions">
+                            <a href="/prescriptions" class="btn noels-btn noels-btn--white">Upload a prescription</a>
+                            <a t-att-href="'https://wa.me/%s' % wa_number" target="_blank" rel="noopener" class="btn noels-btn noels-btn--outline-light"><i class="fa fa-whatsapp"/> WhatsApp us</a>
+                        </div>
+                    </div>
+                </section>
+                <div class="container-xl noels-footer__grid">
+                    <div class="noels-footer__brand">
+                        <t t-call="noels_pharmacy_website.noels_logo"/>
+                        <p>Your neighbourhood pharmacy for trusted products, thoughtful service and everyday wellness.</p>
+                        <div class="noels-socials">
+                            <a t-att-href="'https://wa.me/%s' % wa_number" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa fa-whatsapp"/></a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Shop</h3>
+                        <a href="/shop">All products</a>
+                        <a href="/shop?search=vitamins">Vitamins &amp; supplements</a>
+                        <a href="/shop?search=personal+care">Personal care</a>
+                        <a href="/shop?search=baby">Baby &amp; child</a>
+                        <a href="/brands">Brands</a>
+                    </div>
+                    <div>
+                        <h3>Help &amp; services</h3>
+                        <a href="/prescriptions">Prescription requests</a>
+                        <a href="/pharmacy-services">Pharmacy services</a>
+                        <a href="/delivery-returns">Delivery &amp; returns</a>
+                        <a href="/faq">Frequently asked questions</a>
+                        <a href="/my/home">My account</a>
+                    </div>
+                    <div>
+                        <h3>Visit Noel's</h3>
+                        <p><i class="fa fa-map-marker"/> <t t-out="request.website.noels_store_address or '55 Rodney Road, Endeavour, Chaguanas'"/></p>
+                        <p><i class="fa fa-phone"/> <a t-att-href="'tel:+1868%s' % store_phone.replace('-', '')"><t t-out="store_phone"/></a></p>
+                        <p><i class="fa fa-whatsapp"/> <a t-att-href="'https://wa.me/%s' % wa_number" target="_blank" rel="noopener"><t t-out="wa_display"/></a></p>
+                        <p><i class="fa fa-clock-o"/> <t t-out="request.website.noels_opening_hours or 'Opening hours coming soon'"/></p>
+                    </div>
+                </div>
+                <div class="container-xl noels-footer__bottom">
+                    <span>© 2026 Noel's Pharmacy &amp; Wellness Center Ltd. All rights reserved.</span>
+                    <div><a href="/privacy-policy">Privacy</a><a href="/terms-conditions">Terms</a><span>Secure checkout by Odoo eCommerce</span></div>
+                </div>
+                <a t-att-href="'https://wa.me/%s' % wa_number" target="_blank" rel="noopener" class="noels-whatsapp-float" aria-label="Chat with Noel's Pharmacy on WhatsApp">
+                    <i class="fa fa-whatsapp"/><span>Chat with us</span>
+                </a>
+            </footer>
+        </xpath>
+    </template>
+</odoo>

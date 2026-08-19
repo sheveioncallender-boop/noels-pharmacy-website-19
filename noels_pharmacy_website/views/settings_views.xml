@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_noels_website_settings_form" model="ir.ui.view">
+        <field name="name">noels.website.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="arch" type="xml">
+            <form string="Noel's Website Settings">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Noel's Website Settings</h1>
+                    </div>
+                    <group>
+                        <field name="website_id" options="{'no_create': True}" groups="website.group_multi_website"/>
+                    </group>
+                    <group string="Store Details" col="2">
+                        <field name="noels_store_phone" placeholder="610-6635"/>
+                        <field name="noels_whatsapp_display" placeholder="750-6635"/>
+                        <field name="noels_whatsapp_number" placeholder="18687506635"/>
+                        <field name="noels_public_email" widget="email"/>
+                        <field name="noels_store_address"/>
+                        <field name="noels_opening_hours"/>
+                    </group>
+                    <group string="Online Requests" col="2">
+                        <field name="noels_notification_email" widget="email"/>
+                        <field name="noels_delivery_threshold"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="execute" string="Save" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_noels_website_settings" model="ir.actions.act_window">
+        <field name="name">Website Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_noels_website_settings_form"/>
+        <field name="target">current</field>
+        <field name="context">{'module': 'noels_pharmacy_website'}</field>
+    </record>
+</odoo>
+

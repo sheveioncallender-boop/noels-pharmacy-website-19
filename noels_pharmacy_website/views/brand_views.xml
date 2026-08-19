@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_noels_brand_list" model="ir.ui.view">
+        <field name="name">noels.brand.list</field>
+        <field name="model">noels.brand</field>
+        <field name="arch" type="xml">
+            <list string="Website Brands" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="website_id" groups="website.group_multi_website"/>
+                <field name="is_published" widget="boolean_toggle"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_noels_brand_form" model="ir.ui.view">
+        <field name="name">noels.brand.form</field>
+        <field name="model">noels.brand</field>
+        <field name="arch" type="xml">
+            <form string="Website Brand">
+                <sheet>
+                    <widget name="web_ribbon" title="Unpublished" bg_color="text-bg-warning" invisible="is_published"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920'}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <field name="sequence"/>
+                        <field name="website_id" groups="website.group_multi_website"/>
+                        <field name="is_published"/>
+                        <field name="active"/>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" nolabel="1" widget="html"/>
+                        </page>
+                        <page string="Products">
+                            <field name="product_ids" context="{'default_noels_brand_id': id}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="default_code"/>
+                                    <field name="list_price"/>
+                                    <field name="is_published"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_noels_brands" model="ir.actions.act_window">
+        <field name="name">Website Brands</field>
+        <field name="res_model">noels.brand</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="product_template_form_noels_brand" model="ir.ui.view">
+        <field name="name">product.template.form.noels.brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="noels_brand_id" options="{'no_create_edit': False}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

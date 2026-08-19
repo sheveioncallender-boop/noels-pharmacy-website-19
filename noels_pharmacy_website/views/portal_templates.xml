@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_noels_prescriptions" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <a href="/my/prescriptions" class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3">
+                <span class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width:46px;height:46px"><i class="fa fa-file-text-o"/></span>
+                <span class="flex-grow-1"><strong class="d-block">My Prescriptions</strong><small class="text-muted">View online prescription request status</small></span>
+                <i class="fa fa-chevron-right text-muted"/>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="portal_my_prescriptions" name="My Prescription Requests">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar"><t t-set="title">My Prescription Requests</t></t>
+            <div class="noels-portal-card">
+                <div class="noels-portal-heading"><div><span class="noels-eyebrow">Noel's Pharmacy</span><h2>Prescription requests</h2></div><a href="/prescriptions" class="btn noels-btn noels-btn--primary">New request</a></div>
+                <div t-if="prescriptions" class="table-responsive"><table class="table align-middle"><thead><tr><th>Reference</th><th>Submitted</th><th>Patient</th><th>Fulfilment</th><th>Status</th><th/></tr></thead><tbody><tr t-foreach="prescriptions" t-as="prescription"><td><strong t-out="prescription.name"/></td><td><span t-field="prescription.submitted_at" t-options="{'widget': 'datetime'}"/></td><td t-out="prescription.patient_name"/><td t-out="'Pickup' if prescription.fulfillment == 'pickup' else 'Delivery'"/><td><span class="badge rounded-pill text-bg-light" t-out="dict(prescription._fields['state'].selection).get(prescription.state)"/></td><td><a t-att-href="'/my/prescriptions/%s' % prescription.id">View <i class="fa fa-angle-right"/></a></td></tr></tbody></table></div>
+                <div t-else="" class="noels-empty-products"><i class="fa fa-file-text-o"/><h3>No linked prescription requests yet.</h3><p>Requests submitted while signed in will appear here.</p><a href="/prescriptions" class="btn noels-btn noels-btn--primary">Submit a request</a></div>
+            </div>
+            <div class="o_portal_pager text-center"><t t-call="portal.pager"/></div>
+        </t>
+    </template>
+
+    <template id="portal_prescription_detail" name="Prescription Request Detail">
+        <t t-call="portal.portal_layout">
+            <div class="noels-portal-card">
+                <a href="/my/prescriptions" class="noels-back-link"><i class="fa fa-arrow-left"/> All prescription requests</a>
+                <div class="noels-portal-detail-head"><div><span class="noels-eyebrow">Prescription request</span><h1 t-out="prescription.name"/><p>Submitted <span t-field="prescription.submitted_at" t-options="{'widget': 'datetime'}"/></p></div><span class="noels-status-pill" t-att-data-state="prescription.state" t-out="dict(prescription._fields['state'].selection).get(prescription.state)"/></div>
+                <div class="noels-result-summary"><div><span>Patient</span><b t-out="prescription.patient_name"/></div><div><span>Fulfilment</span><b t-out="'Store pickup' if prescription.fulfillment == 'pickup' else 'Available delivery'"/></div><div><span>Files received</span><b t-out="len(prescription.attachment_ids)"/></div></div>
+                <div class="noels-result-alert"><i class="fa fa-info-circle"/><span>Noel's will contact you if clarification is needed and when your request reaches the next stage.</span></div>
+                <a t-att-href="'https://wa.me/%s' % (request.website.noels_whatsapp_number or '18687506635')" target="_blank" rel="noopener" class="btn noels-btn noels-btn--ghost"><i class="fa fa-whatsapp"/> Ask about this request</a>
+            </div>
+        </t>
+    </template>
+</odoo>

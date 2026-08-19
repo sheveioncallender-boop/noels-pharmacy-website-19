@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mail_template_prescription_customer" model="mail.template">
+        <field name="name">Noel's: Prescription request received</field>
+        <field name="model_id" ref="model_noels_prescription_request"/>
+        <field name="subject">Prescription request {{ object.name }} received</field>
+        <field name="email_from">{{ object.company_id.partner_id.email_formatted or user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family:Arial,sans-serif;color:#10213f;line-height:1.6">
+                <h2 style="color:#073f8c">We received your prescription request</h2>
+                <p>Hello <t t-out="object.patient_name"/>,</p>
+                <p>Your request <strong><t t-out="object.name"/></strong> has been submitted for pharmacist review.</p>
+                <p>This confirmation is not approval to dispense. A member of the pharmacy team will contact you after reviewing the prescription and stock availability.</p>
+                <p>Thank you,<br/>Noel's Pharmacy &amp; Wellness Center Ltd.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_prescription_staff" model="mail.template">
+        <field name="name">Noel's: New prescription request notification</field>
+        <field name="model_id" ref="model_noels_prescription_request"/>
+        <field name="subject">New online prescription request {{ object.name }}</field>
+        <field name="email_from">{{ object.company_id.partner_id.email_formatted or user.email_formatted }}</field>
+        <field name="email_to">{{ ctx.get('noels_notification_email') }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family:Arial,sans-serif;color:#10213f;line-height:1.6">
+                <h2 style="color:#073f8c">New prescription request</h2>
+                <p><strong>Reference:</strong> <t t-out="object.name"/></p>
+                <p><strong>Patient:</strong> <t t-out="object.patient_name"/></p>
+                <p><strong>Mobile:</strong> <t t-out="object.mobile"/></p>
+                <p><strong>Fulfilment:</strong> <t t-out="object.fulfillment"/></p>
+                <p>Open Noel's Online in Odoo to review the prescription files and update the request.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_contact_staff" model="mail.template">
+        <field name="name">Noel's: Website contact notification</field>
+        <field name="model_id" ref="model_noels_contact_request"/>
+        <field name="subject">Website enquiry {{ object.name }}: {{ object.subject }}</field>
+        <field name="email_from">{{ object.company_id.partner_id.email_formatted or user.email_formatted }}</field>
+        <field name="email_to">{{ ctx.get('noels_notification_email') }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family:Arial,sans-serif;color:#10213f;line-height:1.6">
+                <h2 style="color:#073f8c">New website enquiry</h2>
+                <p><strong>From:</strong> <t t-out="object.customer_name"/></p>
+                <p><strong>Phone:</strong> <t t-out="object.phone"/></p>
+                <p><strong>Email:</strong> <t t-out="object.email or '-'"/></p>
+                <p><strong>Subject:</strong> <t t-out="object.subject"/></p>
+                <p style="white-space:pre-line"><t t-out="object.message"/></p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

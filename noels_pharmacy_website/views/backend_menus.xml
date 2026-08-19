@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_noels_online_root"
+              name="Noel's Online"
+              sequence="55"
+              web_icon="noels_pharmacy_website,static/description/icon.png"
+              groups="noels_pharmacy_website.group_noels_online_user"/>
+    <menuitem id="menu_noels_prescription_requests"
+              name="Prescription Requests"
+              parent="menu_noels_online_root"
+              action="action_noels_prescription_requests"
+              sequence="10"/>
+    <menuitem id="menu_noels_contact_requests"
+              name="Website Enquiries"
+              parent="menu_noels_online_root"
+              action="action_noels_contact_requests"
+              sequence="20"/>
+    <menuitem id="menu_noels_catalog"
+              name="Website Catalogue"
+              parent="menu_noels_online_root"
+              sequence="30"/>
+    <menuitem id="menu_noels_brands"
+              name="Brands"
+              parent="menu_noels_catalog"
+              action="action_noels_brands"
+              sequence="10"/>
+    <menuitem id="menu_noels_configuration"
+              name="Configuration"
+              parent="menu_noels_online_root"
+              sequence="90"
+              groups="noels_pharmacy_website.group_noels_online_manager"/>
+    <menuitem id="menu_noels_website_settings"
+              name="Website Settings"
+              parent="menu_noels_configuration"
+              action="website.action_website_configuration"
+              sequence="10"/>
+</odoo>

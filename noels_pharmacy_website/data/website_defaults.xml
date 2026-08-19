@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="website.default_website" model="website">
+        <field name="noels_store_phone">610-6635</field>
+        <field name="noels_whatsapp_number">18687506635</field>
+        <field name="noels_whatsapp_display">750-6635</field>
+        <field name="noels_store_address">55 Rodney Road, Endeavour, Chaguanas</field>
+        <field name="noels_opening_hours">Opening hours coming soon</field>
+        <field name="noels_delivery_threshold">300.0</field>
+    </record>
+</odoo>

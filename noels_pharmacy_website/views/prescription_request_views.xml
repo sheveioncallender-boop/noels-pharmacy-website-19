@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_noels_prescription_request_list" model="ir.ui.view">
+        <field name="name">noels.prescription.request.list</field>
+        <field name="model">noels.prescription.request</field>
+        <field name="arch" type="xml">
+            <list string="Prescription Requests"
+                  decoration-info="state == 'review'"
+                  decoration-warning="state == 'clarification'"
+                  decoration-success="state in ('approved', 'ready', 'completed')"
+                  decoration-danger="state in ('declined', 'cancelled')">
+                <field name="name"/>
+                <field name="submitted_at"/>
+                <field name="patient_name"/>
+                <field name="mobile"/>
+                <field name="doctor_name" optional="show"/>
+                <field name="fulfillment"/>
+                <field name="website_id" groups="website.group_multi_website"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_noels_prescription_request_form" model="ir.ui.view">
+        <field name="name">noels.prescription.request.form</field>
+        <field name="model">noels.prescription.request</field>
+        <field name="arch" type="xml">
+            <form string="Prescription Request">
+                <header>
+                    <button name="action_review" string="Start Review" type="object" class="btn-primary" invisible="state != 'submitted'"/>
+                    <button name="action_approve" string="Approve for Fulfilment" type="object" class="btn-primary" invisible="state not in ('review', 'clarification')"/>
+                    <button name="action_ready" string="Mark Ready" type="object" class="btn-primary" invisible="state != 'approved'"/>
+                    <button name="action_complete" string="Complete" type="object" class="btn-primary" invisible="state != 'ready'"/>
+                    <button name="action_decline" string="Unable to Fulfil" type="object" invisible="state in ('completed', 'declined', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="submitted,review,approved,ready,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Patient">
+                            <field name="patient_name"/>
+                            <field name="partner_id"/>
+                            <field name="date_of_birth"/>
+                            <field name="mobile"/>
+                            <field name="email" widget="email"/>
+                        </group>
+                        <group string="Prescription">
+                            <field name="doctor_name"/>
+                            <field name="prescription_date"/>
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="fulfillment"/>
+                            <field name="website_id" groups="website.group_multi_website"/>
+                        </group>
+                    </group>
+                    <group string="Delivery" invisible="fulfillment != 'delivery'">
+                        <field name="delivery_address" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Prescription Files">
+                            <field name="attachment_ids" widget="many2many_binary" nolabel="1"/>
+                        </page>
+                        <page string="Customer Notes">
+                            <field name="notes" nolabel="1" placeholder="Notes submitted by the customer"/>
+                        </page>
+                        <page string="Internal Notes">
+                            <field name="internal_notes" nolabel="1" placeholder="Pharmacist and staff notes"/>
+                        </page>
+                        <page string="Consent &amp; Audit">
+                            <group>
+                                <field name="consent" readonly="1"/>
+                                <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_noels_prescription_request_search" model="ir.ui.view">
+        <field name="name">noels.prescription.request.search</field>
+        <field name="model">noels.prescription.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Prescription Requests">
+                <field name="name"/>
+                <field name="patient_name"/>
+                <field name="mobile"/>
+                <field name="doctor_name"/>
+                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Under Review" name="review" domain="[('state', '=', 'review')]"/>
+                <filter string="Ready" name="ready" domain="[('state', '=', 'ready')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <separator/>
+                <filter string="Submitted Today" name="today" date="submitted_at"/>
+                <group>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Fulfilment" name="group_fulfillment" context="{'group_by': 'fulfillment'}"/>
+                    <filter string="Submitted Date" name="group_date" context="{'group_by': 'submitted_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_noels_prescription_requests" model="ir.actions.act_window">
+        <field name="name">Prescription Requests</field>
+        <field name="res_model">noels.prescription.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_noels_prescription_request_search"/>
+        <field name="context">{'search_default_submitted': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No online prescription requests yet</p>
+            <p>Requests submitted through the Noel's website will appear here for pharmacist review.</p>
+        </field>
+    </record>
+</odoo>

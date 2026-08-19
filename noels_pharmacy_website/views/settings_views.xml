@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_noels_website_settings_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.noels</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="website.res_config_settings_view_form"/>
+        <field name="priority" eval="90"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='website']" position="inside">
+                <block title="Noel's Pharmacy" id="noels_pharmacy_settings">
+                    <setting string="Store contact details"
+                             help="Contact information displayed throughout the Noel's website.">
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label for="noels_store_phone" class="col-lg-3 o_light_label"/>
+                                <field name="noels_store_phone" placeholder="610-6635"/>
+                            </div>
+                            <div class="row mt16">
+                                <label for="noels_whatsapp_display" class="col-lg-3 o_light_label" string="WhatsApp display"/>
+                                <field name="noels_whatsapp_display" placeholder="750-6635"/>
+                            </div>
+                            <div class="row mt16">
+                                <label for="noels_whatsapp_number" class="col-lg-3 o_light_label" string="WhatsApp link number"/>
+                                <field name="noels_whatsapp_number" placeholder="18687506635"/>
+                            </div>
+                            <div class="row mt16">
+                                <label for="noels_public_email" class="col-lg-3 o_light_label"/>
+                                <field name="noels_public_email" widget="email"/>
+                            </div>
+                            <div class="row mt16">
+                                <label for="noels_store_address" class="col-lg-3 o_light_label"/>
+                                <field name="noels_store_address"/>
+                            </div>
+                            <div class="row mt16">
+                                <label for="noels_opening_hours" class="col-lg-3 o_light_label"/>
+                                <field name="noels_opening_hours"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting string="Online request notifications"
+                             help="Email address that receives new prescription and website enquiry alerts.">
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label for="noels_notification_email" class="col-lg-3 o_light_label"/>
+                                <field name="noels_notification_email" widget="email"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting string="Delivery promotion"
+                             help="Optional order value displayed in delivery promotion messaging.">
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label for="noels_delivery_threshold" class="col-lg-3 o_light_label"/>
+                                <field name="noels_delivery_threshold"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

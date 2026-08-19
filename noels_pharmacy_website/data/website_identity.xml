@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="website.default_website" model="website">
+        <field name="name">Noel's Pharmacy &amp; Wellness Center Ltd.</field>
+    </record>
+</odoo>

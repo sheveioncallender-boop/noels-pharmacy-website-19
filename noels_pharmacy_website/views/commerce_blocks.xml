@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="category_circles" name="Noel’s live category circles">
+        <t t-set="noels_categories" t-value="website._noels_categories()"/>
+        <section t-if="noels_categories" class="noels-category-section wrap" aria-label="Shop by category" contenteditable="false">
+            <div class="center-heading"><span class="eyebrow">FIND YOUR EVERYDAY ESSENTIALS</span><h2>shop by category</h2></div>
+            <div class="noels-category-circles">
+                <a t-foreach="noels_categories" t-as="category" t-att-href="'/shop/category/%s' % category.id" class="noels-category">
+                    <span class="noels-category-image"><img t-att-src="'/web/image/product.public.category/%s/image_512' % category.id" t-att-alt="category.name" width="180" height="180" loading="lazy"/></span>
+                    <h3 t-field="category.name"/>
+                </a>
+            </div>
+        </section>
+    </template>
+    <template id="featured_products" name="Noel’s published product selection">
+        <t t-set="noels_products" t-value="website._noels_featured_products()"/>
+        <section t-if="noels_products" class="wrap noels-featured-section" contenteditable="false">
+            <!-- Use native Odoo pricelist/tax/fiscal-position calculations for each visitor. -->
+            <t t-set="noels_prices" t-value="noels_products._get_sales_prices(website)"/>
+            <div class="section-heading"><div><span class="eyebrow">DISCOVER SOMETHING FOR YOU</span><h2>everyday favourites</h2></div><a href="/shop" class="quiet-link">Shop all products <span aria-hidden="true">→</span></a></div>
+            <div class="noels-product-grid">
+                <article t-foreach="noels_products" t-as="product" class="noels-product-card">
+                    <a t-att-href="product.website_url" class="noels-product-photo"><img t-att-src="'/web/image/product.template/%s/image_512' % product.id" t-att-alt="product.name" width="512" height="512" loading="lazy"/><span t-if="product.noels_sample_product and website.noels_catalogue_notice" class="noels-sample-badge">Sample</span></a>
+                    <div class="noels-product-copy"><h3><a t-att-href="product.website_url" t-field="product.name"/></h3>
+                        <t t-set="price" t-value="noels_prices[product.id]"/>
+                        <div class="noels-product-price" t-if="not website.prevent_zero_price_sale or price['price_reduce']">
+                            <del t-if="price.get('base_price') and price['base_price'] &gt; price['price_reduce']"><span t-out="price['base_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/></del>
+                            <strong t-out="price['price_reduce']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                        </div>
+                        <a t-att-href="product.website_url" class="noels-product-link">View product <span aria-hidden="true">→</span></a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </template>
+    <template id="promo_banners" name="Noel’s promotional banners">
+        <t t-set="skin_product" t-value="website._noels_promo_product('category_1')"/>
+        <t t-set="baby_product" t-value="website._noels_promo_product('category_5')"/>
+        <section t-if="skin_product or baby_product" class="wrap noels-promo-grid">
+            <a t-if="skin_product" class="noels-promo-card" t-att-href="skin_product.website_url"><div><span class="eyebrow">SKIN CARE, SIMPLIFIED</span><h2>hello,<br/>everyday care.</h2><span class="quiet-link">Discover skin care →</span></div><img t-att-src="'/web/image/product.template/%s/image_512' % skin_product.id" t-att-alt="skin_product.name" width="600" height="600" loading="lazy"/></a>
+            <a t-if="baby_product" class="noels-promo-card" t-att-href="baby_product.website_url"><div><span class="eyebrow">LITTLE MOMENTS. LOTS OF LOVE.</span><h2>care for<br/>your little one.</h2><span class="quiet-link">Discover baby care →</span></div><img t-att-src="'/web/image/product.template/%s/image_512' % baby_product.id" t-att-alt="baby_product.name" width="600" height="600" loading="lazy"/></a>
+        </section>
+    </template>
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <template id="noels_footer" name="Noel’s footer">
+    <div class="noels-content noels-footer">
+      <div class="wrap footer-main">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="/noels_pharmacy_website/static/src/img/noels-logo.webp" width="1274" height="451" alt="Noel’s Pharmacy &amp; Wellness Center Ltd" class="img-fluid"/>
+          </div>
+          <p>A little care can make a big difference.<br/>Your wellbeing is at the heart of it.</p>
+        </div>
+        <div>
+          <h2>Explore</h2>
+          <a href="/">Home</a>
+          <a href="/pharmacy-services">Our services</a>
+          <a href="/wellness">Wellness</a>
+        </div>
+        <div>
+          <h2>Get to know us</h2>
+          <a href="/about-noels">About Noel’s</a>
+          <a href="/visit-noels">Visit &amp; contact</a>
+          <a href="/pharmacy-services#questions">Common questions</a>
+        </div>
+        <div class="footer-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>
+          </svg>
+          <p>Here for your health.<br/>Here for you.</p>
+          <span>NOEL’S PHARMACY<br/>&amp; WELLNESS CENTER LTD</span>
+        </div>
+      </div>
+      <div class="wrap footer-bottom">
+        <span>© 2026 Noel’s Pharmacy &amp; Wellness Center Ltd.</span>
+        <span>Website by <a href="https://spxcorp.net" target="_blank" rel="noopener">Spxcorp Limited</a></span>
+      </div>
+    </div>
+  </template>
+  <template id="layout_brand" inherit_id="website.layout" priority="99" name="Noel’s branding around native Odoo layout">
+    <xpath expr="//div[@id='wrapwrap']" position="attributes">
+      <attribute name="t-attf-class" add="#{'noels-site' if website.noels_brand_enabled else ''}" separator=" "/>
+    </xpath>
+    <xpath expr="//footer[@id='bottom']" position="inside">
+      <t t-if="website.noels_brand_enabled and not no_footer" t-call="noels_pharmacy_website.noels_footer"/>
+    </xpath>
+    <xpath expr="//div[@id='wrapwrap']/main" position="before">
+      <div t-if="website.noels_brand_enabled and website.noels_catalogue_notice" class="noels-catalogue-notice" role="note">Sample catalogue — products and prices are for website testing.</div>
+    </xpath>
+  </template>
+</odoo>

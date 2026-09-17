@@ -1,8 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_noels_prescription_user,Noel's prescription user,model_noels_prescription_request,noels_pharmacy_website.group_noels_online_user,1,1,1,0
-access_noels_prescription_manager,Noel's prescription manager,model_noels_prescription_request,noels_pharmacy_website.group_noels_online_manager,1,1,1,1
-access_noels_contact_user,Noel's contact user,model_noels_contact_request,noels_pharmacy_website.group_noels_online_user,1,1,1,0
-access_noels_contact_manager,Noel's contact manager,model_noels_contact_request,noels_pharmacy_website.group_noels_online_manager,1,1,1,1
-access_noels_brand_user,Noel's brand user,model_noels_brand,noels_pharmacy_website.group_noels_online_user,1,1,1,0
-access_noels_brand_manager,Noel's brand manager,model_noels_brand,noels_pharmacy_website.group_noels_online_manager,1,1,1,1
-

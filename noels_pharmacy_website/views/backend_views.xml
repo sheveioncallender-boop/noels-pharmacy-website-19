@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="settings_noels" model="ir.ui.view">
+        <field name="name">Noel’s website settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="website.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='website']" position="inside">
+                <block title="Noel’s Pharmacy" name="noels_settings">
+                    <setting string="Noel’s branding" help="Apply the logo colour palette and fonts around Odoo’s native shop, header, cart and checkout."><field name="noels_brand_enabled"/></setting>
+                    <setting string="Opening hours" help="Displayed on the Visit &amp; Contact page. Company address, phone and email use the website company’s contact record."><field name="noels_opening_hours" placeholder="Add confirmed opening hours"/></setting>
+                    <setting string="Sample catalogue notice" help="Keep this enabled while reviewing sample products and prices."><field name="noels_catalogue_notice"/></setting>
+                    <setting string="Sample products" help="Unpublish all Noel’s sample products for the selected website before launch. This does not delete products or orders.">
+                        <button name="action_noels_unpublish_samples" type="object" string="Unpublish sample products" class="btn btn-secondary" confirm="Unpublish the Noel’s sample products on this website?"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+    <record id="category_noels" model="ir.ui.view">
+        <field name="name">Noel’s category circle settings</field><field name="model">product.public.category</field>
+        <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+        <field name="arch" type="xml"><field name="parent_id" position="after"><field name="noels_homepage_featured"/><field name="sequence"/></field></field>
+    </record>
+    <record id="product_noels" model="ir.ui.view">
+        <field name="name">Noel’s product merchandising</field><field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales']" position="inside">
+                <group string="Noel’s Website"><field name="noels_homepage_featured"/><field name="noels_sample_product"/><field name="noels_sample_source_url" widget="url" invisible="not noels_sample_product"/></group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

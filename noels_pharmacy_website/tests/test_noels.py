@@ -3,6 +3,7 @@ from lxml import html
 from odoo.tests import HttpCase, tagged
 from odoo.addons.website_sale.tests.common import MockRequest
 from ..hooks import post_init_hook
+from ..upgrade import apply_storefront_redesign, REDESIGN_MARKER
 
 
 @tagged('post_install', '-at_install', 'noels_pharmacy')
@@ -61,6 +62,7 @@ class TestNoelsWebsite(HttpCase):
                 self.assertEqual(len(document.xpath('//header[@id="top"]')), 1)
                 self.assertTrue(document.xpath('//header//a[@href="/shop/cart"]'))
                 self.assertFalse(document.xpath('//header//button[contains(@class,"menu-toggle")]'))
+                self.assertTrue(document.cssselect('header .noels-topbar'))
         home = html.fromstring(self.url_open('/').content)
         self.assertEqual(len(home.xpath('//a[contains(@class,"noels-category")]')), 6)
         self.assertEqual(len(home.xpath('//div[contains(concat(" ",@class," ")," banner-slide ")]')), 3)
@@ -79,3 +81,48 @@ class TestNoelsWebsite(HttpCase):
         checkout = self.url_open('/shop/checkout', timeout=60)
         self.assertEqual(checkout.status_code, 200)
         self.assertNotIn('Traceback', checkout.text)
+
+    def test_company_phone_and_desktop_cart_order(self):
+        self.website.company_id.phone = '+1 868 555 0199'
+        page = html.fromstring(self.url_open('/').content)
+        self.assertTrue(page.xpath('//header//a[@href="tel:+1 868 555 0199"]'))
+        self.assertNotIn('555-555-5556', page.xpath('//header')[0].text_content())
+        desktop_cart = page.cssselect('#o_main_nav .o_wsale_my_cart')
+        self.assertEqual(len(desktop_cart), 1)
+        self.assertTrue(desktop_cart[0].xpath('preceding-sibling::*'))
+        self.assertEqual(page.cssselect('.noels-home')[0].get('id'), 'wrap')
+
+    def test_redesign_upgrade_preserves_catalogue_and_other_pages(self):
+        home = self.env.ref('noels_pharmacy_website.page_home').view_id.with_context(lang='en_US')
+        about = self.env.ref('noels_pharmacy_website.page_about').view_id.with_context(lang='en_US')
+        old = '<t t-name="noels_pharmacy_website.page_home"><t t-call="website.layout"><div id="wrap">Existing homepage edit</div></t></t>'
+        home.arch_db = old
+        about_before = about.arch_db
+        self.sample.list_price = 72.50
+        self.sample.is_published = False
+        self.env['ir.config_parameter'].sudo().set_param(REDESIGN_MARKER, False)
+        apply_storefront_redesign(self.env)
+        self.assertIn('noels-home', home.arch_db)
+        backup = self.env['ir.ui.view'].with_context(active_test=False).search([
+            ('key', '=', 'noels_pharmacy_website.home_before_2_1'),
+        ], limit=1)
+        self.assertTrue(backup)
+        self.assertFalse(backup.active)
+        self.assertIn('Existing homepage edit', backup.arch_db)
+        self.assertEqual(about.arch_db, about_before)
+        self.assertEqual(self.sample.list_price, 72.50)
+        self.assertFalse(self.sample.is_published)
+        home.arch_db = old
+        apply_storefront_redesign(self.env)
+        self.assertIn('Existing homepage edit', home.arch_db)
+
+    def test_frontend_asset_compilation(self):
+        page = html.fromstring(self.url_open('/').content)
+        assets = [href for href in page.xpath('//link[@rel="stylesheet"]/@href')
+                  if '/web/assets/' in href]
+        self.assertTrue(assets)
+        for href in assets:
+            response = self.url_open(href, timeout=120)
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn('style compilation failed', response.text.lower())
+            self.assertNotIn('sass.compileerror', response.text.lower())

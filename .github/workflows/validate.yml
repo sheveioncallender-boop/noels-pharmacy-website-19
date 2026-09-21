@@ -50,6 +50,15 @@ jobs:
       - name: Upgrade without resetting content
         run: |
           python /tmp/odoo/odoo-bin -d noels_test --db_host=127.0.0.1 --db_port=5432 --db_user=odoo --db_password=odoo_test_only --addons-path=/tmp/odoo/addons,$GITHUB_WORKSPACE -u noels_pharmacy_website --without-demo=True --stop-after-init --logfile=/tmp/noels-upgrade.log
+      - name: Upgrade the previous released storefront
+        run: |
+          git fetch --depth=1 origin af5ad1a647ef90946a4caa820fc5206a30c329e2
+          mkdir -p /tmp/noels-previous
+          git archive af5ad1a647ef90946a4caa820fc5206a30c329e2 | tar -x -C /tmp/noels-previous
+          python /tmp/odoo/odoo-bin -d noels_migration --db_host=127.0.0.1 --db_port=5432 --db_user=odoo --db_password=odoo_test_only --addons-path=/tmp/odoo/addons,/tmp/noels-previous -i noels_pharmacy_website --without-demo=True --stop-after-init --logfile=/tmp/noels-previous.log
+          NOELS_UPGRADE_PHASE=before python /tmp/odoo/odoo-bin shell -d noels_migration --db_host=127.0.0.1 --db_port=5432 --db_user=odoo --db_password=odoo_test_only --addons-path=/tmp/odoo/addons,/tmp/noels-previous --no-http < scripts/check_upgrade.py
+          python /tmp/odoo/odoo-bin -d noels_migration --db_host=127.0.0.1 --db_port=5432 --db_user=odoo --db_password=odoo_test_only --addons-path=/tmp/odoo/addons,$GITHUB_WORKSPACE -u noels_pharmacy_website --without-demo=True --stop-after-init --logfile=/tmp/noels-migration.log
+          NOELS_UPGRADE_PHASE=after python /tmp/odoo/odoo-bin shell -d noels_migration --db_host=127.0.0.1 --db_port=5432 --db_user=odoo --db_password=odoo_test_only --addons-path=/tmp/odoo/addons,$GITHUB_WORKSPACE --no-http < scripts/check_upgrade.py
       - name: Save test logs
         if: always()
         uses: actions/upload-artifact@v4

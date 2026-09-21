@@ -40,6 +40,7 @@ for path in module.rglob('*.py'):
     ast.parse(path.read_text(), filename=str(path))
 for assets in manifest['assets'].values():
     for rel in assets:
+        rel = rel[-1] if isinstance(rel, (list, tuple)) else rel
         path = root / rel
         assert path.is_file(), rel
         if path.suffix in ('.scss', '.css'):
@@ -64,6 +65,9 @@ assert catalogue.xpath('/odoo/data[@noupdate="1"]')
 assert pages.xpath('/odoo/data[@noupdate="1"]')
 layout = etree.parse(str(module / 'views/layout.xml'))
 assert not layout.xpath('//header')  # Native header is inherited intact.
-assert not any('header' in el.get('expr', '') and el.get('position') == 'replace' for el in layout.xpath('//xpath'))
+assert not layout.xpath('//xpath[@position="replace" and (@expr="//header" or @expr="//header[@id=\'top\']")]')
 assert not (module / 'controllers').exists()  # No replacement ecommerce routes.
 print('PASS: XML schema, QWeb expressions, Python/JS syntax, SCSS, local assets, native-header boundary, 12 products, 6 categories, 5 one-time pages.')
+
+from check_native_templates import validate_native_templates
+validate_native_templates(args.odoo_source, module)

@@ -8,7 +8,7 @@
             <xpath expr="//app[@name='website']" position="inside">
                 <block title="Noel’s Pharmacy" name="noels_settings">
                     <setting string="Noel’s branding" help="Apply the logo colour palette and fonts around Odoo’s native shop, header, cart and checkout."><field name="noels_brand_enabled"/></setting>
-                    <setting string="Opening hours" help="Displayed on the Visit &amp; Contact page. Company address, phone and email use the website company’s contact record."><field name="noels_opening_hours" placeholder="Add confirmed opening hours"/></setting>
+                    <setting string="Opening hours" help="Displayed in the top strip and on the Visit &amp; Contact page. Company address, phone and email use the website company’s contact record."><field name="noels_opening_hours" placeholder="Add confirmed opening hours"/></setting>
                     <setting string="Sample catalogue notice" help="Keep this enabled while reviewing sample products and prices."><field name="noels_catalogue_notice"/></setting>
                     <setting string="Sample products" help="Unpublish all Noel’s sample products for the selected website before launch. This does not delete products or orders.">
                         <button name="action_noels_unpublish_samples" type="object" string="Unpublish sample products" class="btn btn-secondary" confirm="Unpublish the Noel’s sample products on this website?"/>
@@ -18,7 +18,7 @@
         </field>
     </record>
     <record id="category_noels" model="ir.ui.view">
-        <field name="name">Noel’s category circle settings</field><field name="model">product.public.category</field>
+        <field name="name">Noel’s category card settings</field><field name="model">product.public.category</field>
         <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
         <field name="arch" type="xml"><field name="parent_id" position="after"><field name="noels_homepage_featured"/><field name="sequence"/></field></field>
     </record>

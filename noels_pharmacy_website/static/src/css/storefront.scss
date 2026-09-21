@@ -1,0 +1,219 @@
+// Value Seekers storefront structure, using Noel’s original blue/green identity.
+// Native Odoo controls and routes keep their own handlers and visibility rules.
+.noels-site {
+    --bs-link-color: #142c68;
+    --bs-link-hover-color: #28784a;
+    > header .navbar { box-shadow: 0 2px 8px #142c680a; }
+    > header .navbar-brand img { height: 64px; max-width: 230px; }
+    > header .nav-link { font-weight: 700; white-space: nowrap; }
+    #top_menu { flex-grow: 1; justify-content: center; }
+    #o_main_nav > .navbar-nav { margin-left: auto; }
+    #o_main_nav .o_wsale_my_cart > a,
+    #o_main_nav .dropdown > a.o_navlink_background {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 44px; min-height: 44px;
+    }
+    > header .o_wsale_my_cart > a { background: #142c68; color: white !important; }
+    > header .o_wsale_my_cart > a:hover { background: #234daf; }
+    .dropdown-menu {
+        --bs-dropdown-link-active-bg: #142c68;
+        --bs-dropdown-link-active-color: #fff;
+        --bs-dropdown-link-hover-bg: #edf3fa;
+        --bs-dropdown-link-hover-color: #142c68;
+    }
+    .dropdown-item.active, .dropdown-item:active,
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link,
+    .active > .page-link, .list-group-item.active {
+        background: #142c68 !important; color: #fff !important;
+    }
+    .btn-primary { background-color: #142c68; border-color: #142c68; color: #fff; }
+    .btn-primary:hover, .btn-primary:active { background-color: #234daf; border-color: #234daf; }
+    .btn-outline-primary { color: #142c68; border-color: #142c68; }
+    .btn-outline-primary:hover { background: #142c68; color: white; }
+    .text-primary, .btn-link, .page-link { color: #142c68 !important; }
+    .bg-primary { background-color: #142c68 !important; }
+    .border-primary { border-color: #142c68 !important; }
+    .form-check-input:checked { background-color: #142c68; border-color: #142c68; }
+    .form-control:focus, .form-select:focus { border-color: #142c68; box-shadow: 0 0 0 .2rem #142c6820; }
+    .noels-phone-link { display: inline-flex; gap: 8px; align-items: center; white-space: nowrap; text-decoration: none; }
+    .noels-topbar { background: #142c68; color: #fff; font-size: 12px; font-weight: 600; }
+    .noels-topbar-inner {
+        width: Min(1240px, calc(100% - 48px)); margin-inline: auto;
+        display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0;
+    }
+    .noels-topbar strong { color: #c5eb9d; }
+    .noels-topbar-contact { display: flex; align-items: center; gap: 24px; }
+    .noels-topbar a { color: white; }
+    .noels-topbar a:hover { text-decoration: underline; }
+    .noels-topbar-contact > span { max-width: 320px; }
+}
+
+.noels-content {
+    font-family: Inter, Arial, sans-serif;
+    .wrap { width: Min(1240px, calc(100% - 48px)); }
+    h1, h2, h3 { font-family: 'Inter Tight', Inter, Arial, sans-serif; font-weight: 750; }
+    h2 { color: var(--navy); }
+    .eyebrow { letter-spacing: .09em; margin-bottom: 14px; }
+    .button { border-radius: 50px; font-weight: 700; padding: 14px 25px; gap: 14px; }
+    .button.secondary { border-color: var(--green); background: white; }
+    .button.secondary:hover { background: #eef6ed; }
+    .section { padding-block: 64px; }
+    .section-heading { margin-bottom: 28px; gap: 24px; }
+    .section-heading h2, .center-heading h2 { font-size: clamp(28px, 3vw, 38px); font-weight: 750; }
+    .center-heading { margin-bottom: 30px; }
+    .banner-slider { height: 530px; min-height: 0; background: white; }
+    .banner-slide { background: #f0f6fa; }
+    .banner-slide > img, .banner-slide:not(.pharmacy-slide) > img {
+        width: 58%; height: 100%; right: 0; object-position: center 45%;
+    }
+    .pharmacy-slide > img { object-position: center 30%; }
+    .wellness-slide > img { object-position: center 45% !important; }
+    .banner-slide .banner-shade, .banner-slide:not(.pharmacy-slide) .banner-shade,
+    .wellness-slide .banner-shade {
+        background: linear-gradient(90deg, #fff 0%, #fff 39%, #fffffff5 43%, #ffffff00 64%) !important;
+    }
+    .banner-content { color: var(--navy); padding-bottom: 35px; }
+    .banner-content .eyebrow { color: var(--green); font-size: 12px; }
+    .banner-content h1, .banner-content h2 {
+        color: var(--navy); font-size: clamp(42px, 4.3vw, 66px); line-height: 1.05;
+        font-weight: 800; max-width: 56%; letter-spacing: -.04em;
+    }
+    .banner-content p { color: var(--ink); max-width: 43%; font-size: 17px; margin: 24px 0; line-height: 1.65; }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 0; max-width: 55%; }
+    .banner-content .button { background: var(--navy); color: white; border-color: var(--navy); border-radius: 50px; min-width: 0; }
+    .banner-content .button.secondary { color: var(--navy); background: white; border-color: var(--green); }
+    .banner-content .button:hover { background: #234daf; border-color: #234daf; color: white; }
+    .banner-controls { bottom: 17px; padding: 4px 10px; gap: 12px; border-radius: 30px; background: #ffffffed; box-shadow: 0 2px 12px #142c6810; }
+    .banner-controls button { color: var(--navy); min-width: 32px; min-height: 32px; }
+    .slide-dots { gap: 0; }
+    .slide-dots button { width: 32px; height: 32px; border: 0; background: transparent; }
+    .slide-dots button::before { content: ''; width: 8px; height: 8px; border: 1px solid var(--navy); border-radius: 50%; }
+    .slide-dots button.selected { background: transparent; }
+    .slide-dots button.selected::before { background: var(--navy); }
+    .banner-controls .slide-pause { border: 1px solid #dce4e9; margin-left: 0; }
+    .care-links { border: 0; position: relative; z-index: 2; }
+    .care-links > .wrap { border-radius: 16px; background: white; box-shadow: 0 8px 30px #142c6810; border: 1px solid #e6ecf0; margin-top: -1px; }
+    .care-links a { min-height: 84px; font-size: 14px; font-weight: 650; padding: 15px; }
+    .care-links a + a { border-left: 1px solid var(--line); }
+    .care-links a svg { width: 27px; height: 27px; }
+    .noels-category-section { padding-block: 55px 42px; }
+    .noels-category-circles { gap: 18px; }
+    .noels-category { border: 1px solid #e3e9ed; border-radius: 15px; overflow: hidden; background: #fff; box-shadow: 0 4px 14px #142c6807; }
+    .noels-category-image { border-radius: 0; border: 0; aspect-ratio: auto; height: 140px; background: #f3f7f5; }
+    .noels-category-image img { padding: 16px; }
+    .noels-category h3 { font-size: 15px; font-weight: 700; padding: 14px 8px; margin: 0; color: var(--navy); }
+    .noels-category:hover .noels-category-image { transform: none; box-shadow: none; background: #eaf2ee; }
+    .noels-category:hover { border-color: #a5c1ae; }
+    .noels-promo-grid { gap: 22px; padding-block: 0 32px; }
+    .noels-promo-card { border-radius: 18px; min-height: 250px; padding: 28px; background: linear-gradient(120deg,#eaf3ff,#f5f9fd); }
+    .noels-promo-card:nth-child(2) { background: linear-gradient(120deg,#eaf4e8,#f8fbf4); }
+    .noels-promo-card h2 { font-size: 34px; font-weight: 800; margin-bottom: 18px; }
+    .noels-promo-card img { height: 205px; }
+    .noels-featured-section { padding-block: 20px 58px; }
+    .noels-product-grid { gap: 20px; }
+    .noels-product-card { border: 1px solid var(--line); border-radius: 15px; overflow: hidden; background: white; }
+    .noels-product-photo { background: #f7f9fa; }
+    .noels-product-copy { padding: 18px; }
+    .noels-product-copy h3 { font-size: 17px; font-weight: 650; }
+    .noels-product-price { font-size: 19px; }
+    .noels-product-link { background: var(--navy); color: white; border: 0; border-radius: 30px; padding: 10px 15px; font-weight: 650; }
+    .noels-product-link:hover { background: var(--blue); }
+    .noels-sample-badge { border-radius: 20px; }
+    .noels-about-strip { background: #f0f6f3; padding-block: 58px; margin-bottom: 55px; }
+    .split { gap: 65px; }
+    .rounded-photo, .wellness-feature, .wellness-tile { border-radius: 18px; }
+    .noels-about-strip .rounded-photo { height: 360px; }
+    .noels-about-strip .rounded-photo img { object-position: center 28%; }
+    .split-copy h2 { font-size: clamp(32px, 3.5vw, 47px); }
+    .cta-section { border-radius: 20px; padding: 38px 45px; margin-bottom: 55px; }
+    .cta-section h2 { color: white; font-size: 36px; }
+    .cta-section .button { border-radius: 40px; }
+    .page-intro { background: linear-gradient(110deg,#f0f5fd,#f1f7ef); padding-block: 60px; }
+    .page-intro h1 { font-weight: 800; color: var(--navy); font-size: clamp(38px, 4.5vw, 64px); }
+    .service-card { border: 1px solid var(--line); padding: 28px; border-radius: 16px; }
+    .service-card h3, .value-card h3 { font-weight: 700; }
+    .iconbox { border-radius: 13px; }
+    .faq-section, .values-section { padding-block: 60px; }
+    .service-row, .faq-grid, .contact-grid, .visit-help { gap: 60px; }
+    .wellness-feature h2 { color: white; }
+    .footer-main { gap: 35px; }
+    .footer-main h2 { color: white; font-weight: 700; }
+    .footer-logo { border-radius: 8px; max-width: 100%; }
+    .footer-note p { color: white; }
+    .footer-bottom { gap: 15px; }
+    :focus-visible { outline: 3px solid #28784a; outline-offset: 4px; }
+    [id] { scroll-margin-top: 145px; }
+}
+
+@media (max-width: 991.98px) {
+    .noels-site {
+        > header .navbar-brand img { height: 50px; max-width: 190px; }
+        .noels-topbar-contact > span { display: none; }
+        .noels-topbar-inner { font-size: 11px; }
+    }
+    .noels-content {
+        .banner-content h1, .banner-content h2 { font-size: 46px; max-width: 58%; }
+        .banner-content p { font-size: 16px; }
+        .hero-buttons { max-width: 48%; }
+        .noels-category-circles { grid-template-columns: repeat(3,minmax(0,1fr)); }
+        .noels-product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+        .noels-promo-card { padding: 22px; min-height: 230px; }
+        .noels-promo-card h2 { font-size: 28px; }
+        .noels-promo-card img { height: 175px; }
+        .split, .service-row, .faq-grid, .contact-grid, .visit-help { gap: 35px; }
+        .footer-main { grid-template-columns: 1fr 1fr; }
+    }
+}
+@media (max-width: 600px) {
+    .noels-site {
+        .noels-topbar-inner { width: calc(100% - 32px); flex-wrap: wrap; justify-content: center; gap: 3px; padding-block: 7px; text-align: center; }
+        .noels-topbar-inner > span { width: 100%; }
+        .noels-topbar-contact { justify-content: center; }
+    }
+    .noels-content {
+        .wrap { width: calc(100% - 32px); }
+        .banner-slider { height: 650px; }
+        .banner-slide > img, .banner-slide:not(.pharmacy-slide) > img { width: 100%; height: 270px; top: 0; object-position: center 40%; }
+        .pharmacy-slide > img { object-position: center 25%; }
+        .banner-slide .banner-shade, .banner-slide:not(.pharmacy-slide) .banner-shade,
+        .wellness-slide .banner-shade { background: linear-gradient(0deg,#fff 0%,#fff 56%,#ffffff00 72%) !important; }
+        .banner-content { justify-content: flex-end; padding-bottom: 73px; }
+        .banner-content h1, .banner-content h2 { max-width: 100%; font-size: 39px; }
+        .banner-content .eyebrow { font-size: 10px; margin-bottom: 12px; }
+        .banner-content p { max-width: 100%; font-size: 15px; margin: 17px 0; }
+        .hero-buttons { max-width: 100%; margin: 0; gap: 8px; }
+        .banner-content .button { padding: 11px 15px; min-height: 46px; font-size: 12px; }
+        .banner-controls { bottom: 16px; }
+        .care-links > .wrap { width: calc(100% - 32px); padding: 0; }
+        .care-links a { font-size: 11px; padding: 14px 8px; min-height: 100px; }
+        .noels-category-section { padding-block: 38px 28px; }
+        .noels-category-circles { gap: 12px; grid-template-columns: repeat(2,minmax(0,1fr)); }
+        .noels-category-image { height: 125px; }
+        .noels-category h3 { font-size: 14px; padding: 12px 8px; }
+        .noels-promo-grid { grid-template-columns: 1fr; gap: 15px; padding-bottom: 28px; }
+        .noels-promo-card { min-height: 220px; }
+        .noels-promo-card h2 { font-size: 31px; }
+        .noels-product-grid { gap: 12px; }
+        .noels-product-copy { padding: 12px; }
+        .noels-product-copy h3 { font-size: 14px; }
+        .noels-product-price { font-size: 16px; }
+        .noels-product-link { padding: 9px 10px; font-size: 11px; }
+        .section-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
+        .noels-featured-section { padding-block: 10px 38px; }
+        .split, .service-row, .faq-grid, .contact-grid, .visit-help { grid-template-columns: 1fr; gap: 28px; }
+        .noels-about-strip { padding-block: 36px; margin-bottom: 36px; }
+        .noels-about-strip .rounded-photo { height: 310px; }
+        .cta-section { padding: 28px; margin-bottom: 36px; gap: 22px; }
+        .cta-section h2 { font-size: 31px; }
+        .page-intro { padding-block: 40px; }
+        .page-intro p { font-size: 16px; }
+        .section { padding-block: 40px; }
+        .footer-main { gap: 28px 16px; }
+        .footer-brand { grid-column: 1 / -1; }
+        .footer-note { grid-column: 1 / -1; padding: 0; border: 0; }
+        .footer-bottom { flex-direction: column; }
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .noels-content .banner-slide, .noels-content .button, .noels-content .noels-product-photo img { transition: none; }
+}

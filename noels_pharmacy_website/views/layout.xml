@@ -12,9 +12,9 @@
         <div>
           <h2>Explore</h2>
           <a href="/">Home</a>
-          <a href="/pharmacy-services">Our services</a>
+          <a href="/shop">Shop all products</a><a href="/pharmacy-services">Our services</a>
           <a href="/wellness">Wellness</a>
-        </div>
+        <a href="/my/orders">My orders</a></div>
         <div>
           <h2>Get to know us</h2>
           <a href="/about-noels">About Noel’s</a>
@@ -45,5 +45,50 @@
     <xpath expr="//div[@id='wrapwrap']/main" position="before">
       <div t-if="website.noels_brand_enabled and website.noels_catalogue_notice" class="noels-catalogue-notice" role="note">Sample catalogue — products and prices are for website testing.</div>
     </xpath>
+  <xpath expr="//header/*[1]" position="before"><t t-call="noels_pharmacy_website.noels_announcement"/></xpath></template>
+<template id="noels_phone_link" name="Noel’s company phone">
+    <a t-if="website.company_id.phone" t-att-href="'tel:' + website.company_id.phone" class="noels-phone-link">
+      <i class="fa fa-phone" aria-hidden="true"/><span class="o_force_ltr" t-field="website.company_id.phone"/>
+    </a>
+    <a t-else="" href="/visit-noels" class="noels-phone-link">Visit &amp; contact</a>
   </template>
-</odoo>
+  <template id="noels_announcement" name="Noel’s announcement strip">
+    <div t-if="website.noels_brand_enabled" class="noels-topbar">
+      <div class="noels-topbar-inner">
+        <span>Your neighbourhood pharmacy <strong>— Care for every day.</strong></span>
+        <div class="noels-topbar-contact"><span t-if="website.noels_opening_hours" t-field="website.noels_opening_hours"/><t t-call="noels_pharmacy_website.noels_phone_link"/></div>
+      </div>
+    </div>
+  </template>
+  <template id="noels_header_order" inherit_id="website_sale.template_header_default" priority="60" name="Noel’s native header order">
+    <xpath expr="//t[@t-call='website.placeholder_header_text_element']" position="attributes"><attribute name="t-if">not website.noels_brand_enabled</attribute></xpath>
+    <xpath expr="//t[@t-call='website.placeholder_header_call_to_action']" position="attributes"><attribute name="t-if">not website.noels_brand_enabled</attribute></xpath>
+    <xpath expr="//t[@t-call='portal.user_dropdown']" position="attributes">
+      <attribute name="_user_name">not website.noels_brand_enabled</attribute>
+      <attribute name="_icon">website.noels_brand_enabled</attribute>
+      <attribute name="_link_class.f"/>
+      <attribute name="_link_class">'o_navlink_background btn rounded-circle position-relative text-reset' if website.noels_brand_enabled else ((_additional_btn_color or 'nav-link') + ' border-0')</attribute>
+    </xpath>
+    <xpath expr="//t[@t-call='website_sale.header_cart_link']" position="attributes"><attribute name="t-if">not website.noels_brand_enabled</attribute></xpath>
+    <xpath expr="//t[@t-call='portal.user_dropdown']" position="after">
+      <t t-if="website.noels_brand_enabled" t-call="website_sale.header_cart_link" _icon="True" _text="False" _item_class.f="o_no_autohide_item" _link_class.f="o_navlink_background btn rounded-circle position-relative text-reset" _badge_class.f="position-absolute top-0 end-0"/>
+    </xpath>
+  </template>
+  <template id="noels_account_label" inherit_id="portal.user_dropdown" name="Account button accessibility">
+    <xpath expr="//a[@data-bs-toggle='dropdown']" position="attributes"><attribute name="aria-label">My account</attribute></xpath>
+  </template>
+<template id="noels_native_phone" inherit_id="website.header_text_element" priority="60" name="Noel’s native phone element"><xpath expr="(//a[starts-with(@href, 'tel:')])[3]" position="replace"><t t-if="website.noels_brand_enabled" t-call="noels_pharmacy_website.noels_phone_link"/><a href="tel:+1 555-555-5556" class="nav-link o_nav-link_secondary p-2" t-else="">
+                        <i class="fa fa-1x fa-fw fa-phone me-1"/>
+                        <span class="o_force_ltr"><small>+1 555-555-5556</small></span>
+                    </a>
+                </xpath><xpath expr="(//a[starts-with(@href, 'tel:')])[2]" position="replace"><t t-if="website.noels_brand_enabled" t-call="noels_pharmacy_website.noels_phone_link"/><a href="tel:+1 555-555-5556" class="nav-link o_nav-link_secondary p-2 o_navlink_background_hover d-flex align-items-center h-100 text-reset" t-else="">
+                        <i class="fa fa-1x fa-fw fa-phone me-1"/>
+                        <span class="o_force_ltr"><small>+1 555-555-5556</small></span>
+                    </a>
+                </xpath><xpath expr="(//a[starts-with(@href, 'tel:')])[1]" position="replace"><t t-if="website.noels_brand_enabled" t-call="noels_pharmacy_website.noels_phone_link"/><a href="tel:+1 555-555-5556" class="nav-link o_nav-link_secondary" t-else="">
+                        <small>
+                            <i class="fa fa-1x fa-fw fa-phone me-1"/>͏ <!-- Empty character needed to be able to delete the icon. -->
+                            <span class="o_force_ltr">+1 555-555-5556</span>
+                        </small>
+                    </a>
+                    </xpath></template></odoo>

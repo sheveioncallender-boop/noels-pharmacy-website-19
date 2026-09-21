@@ -62,7 +62,7 @@ class TestNoelsWebsite(HttpCase):
                 self.assertEqual(len(document.xpath('//header[@id="top"]')), 1)
                 self.assertTrue(document.xpath('//header//a[@href="/shop/cart"]'))
                 self.assertFalse(document.xpath('//header//button[contains(@class,"menu-toggle")]'))
-                self.assertTrue(document.cssselect('header .noels-topbar'))
+                self.assertTrue(document.xpath('//header//*[contains(concat(" ", @class, " "), " noels-topbar ")]'))
         home = html.fromstring(self.url_open('/').content)
         self.assertEqual(len(home.xpath('//a[contains(@class,"noels-category")]')), 6)
         self.assertEqual(len(home.xpath('//div[contains(concat(" ",@class," ")," banner-slide ")]')), 3)
@@ -87,10 +87,10 @@ class TestNoelsWebsite(HttpCase):
         page = html.fromstring(self.url_open('/').content)
         self.assertTrue(page.xpath('//header//a[@href="tel:+1 868 555 0199"]'))
         self.assertNotIn('555-555-5556', page.xpath('//header')[0].text_content())
-        desktop_cart = page.cssselect('#o_main_nav .o_wsale_my_cart')
+        desktop_cart = page.xpath('//*[@id="o_main_nav"]//*[contains(concat(" ", @class, " "), " o_wsale_my_cart ")]')
         self.assertEqual(len(desktop_cart), 1)
         self.assertTrue(desktop_cart[0].xpath('preceding-sibling::*'))
-        self.assertEqual(page.cssselect('.noels-home')[0].get('id'), 'wrap')
+        self.assertEqual(page.xpath('//*[contains(concat(" ", @class, " "), " noels-home ")]')[0].get('id'), 'wrap')
 
     def test_redesign_upgrade_preserves_catalogue_and_other_pages(self):
         home = self.env.ref('noels_pharmacy_website.page_home').view_id.with_context(lang='en_US')

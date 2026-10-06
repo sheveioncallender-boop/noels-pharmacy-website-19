@@ -35,6 +35,8 @@ elif phase == 'after':
     assert order.order_line.product_id.product_tmpl_id == product
     assert env['product.template'].with_context(active_test=False).search_count([]) == int(params.get_param('noels_test.product_count'))
     assert not website.noels_catalogue_notice
+    assert website.noels_public_phone == '+1 868 750-6635'
+    assert website.noels_public_address == '38, Chaguanas\nTrinidad & Tobago'
     layout = env.ref('noels_pharmacy_website.layout_brand').arch_db
     assert 'noels-catalogue-notice' not in layout
     print('PASS: 2.1.0 upgrade archives all 12 samples, removes notice, preserves real products, orders and edited pages.')

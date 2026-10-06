@@ -2,6 +2,7 @@ import base64
 import json
 
 from odoo.tools import file_open
+from .contact_data import apply_listing_details
 
 MODULE = 'noels_pharmacy_website'
 SNAPSHOT = MODULE + '.installation_snapshot'
@@ -59,6 +60,7 @@ def post_init_hook(env):
                 'res_id': menu.id, 'noupdate': True,
             })
     params.set_param(SNAPSHOT, json.dumps(snapshot))
+    apply_listing_details(env)
 
 
 def uninstall_hook(env):

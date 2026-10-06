@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from odoo import fields, models
 from odoo.fields import Domain
 
@@ -8,6 +10,16 @@ class Website(models.Model):
     noels_brand_enabled = fields.Boolean('Use Noel’s branding', default=False)
     noels_opening_hours = fields.Text('Opening hours', translate=True)
     noels_catalogue_notice = fields.Boolean('Show sample catalogue notice', default=False)
+    noels_public_phone = fields.Char('Store phone')
+    noels_public_address = fields.Text('Store address')
+
+    def _noels_directions_url(self):
+        self.ensure_one()
+        address = (self.noels_public_address or '').replace('\n', ', ')
+        destination = 'Noel’s Pharmacy & Wellness Center Ltd, ' + address
+        return 'https://www.google.com/maps/dir/?' + urlencode({
+            'api': '1', 'destination': destination,
+        })
 
     def _noels_categories(self):
         """The same website/publication boundary as Odoo's normal category list."""

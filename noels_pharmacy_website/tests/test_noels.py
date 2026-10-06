@@ -4,6 +4,7 @@ from odoo.tests import HttpCase, tagged
 from odoo.addons.website_sale.tests.common import MockRequest
 from ..hooks import post_init_hook
 from ..cleanup import retire_sample_catalogue
+from ..contact_data import apply_listing_details
 from ..upgrade import apply_storefront_redesign, REDESIGN_MARKER
 
 
@@ -36,6 +37,25 @@ class TestNoelsWebsite(HttpCase):
         post_init_hook(self.env)
         self.assertEqual(self.product.list_price, 72.50)
         self.assertEqual(self.env['website.menu'].search_count([('website_id', '=', self.website.id)]), menu_count)
+
+    def test_listing_contact_links_and_preservation(self):
+        self.assertEqual(self.website.noels_public_phone, '+1 868 750-6635')
+        self.assertEqual(self.website.noels_public_address, '38, Chaguanas\nTrinidad & Tobago')
+        for path in ['/', '/visit-noels']:
+            response = self.url_open(path, timeout=60)
+            self.assertEqual(response.status_code, 200)
+            page = html.fromstring(response.content)
+            self.assertTrue(page.xpath('//header//a[@href="tel:+1 868 750-6635"]'))
+            self.assertTrue(page.xpath('//footer//a[@href="tel:+1 868 750-6635"]'))
+            links = page.xpath('//a[contains(@class,"noels-directions-link")]/@href')
+            self.assertEqual(len(links), 2 if path == '/visit-noels' else 1)
+            self.assertTrue(all(link == self.website._noels_directions_url() for link in links))
+            self.assertIn('38, Chaguanas', page.text_content())
+        company_phone = self.website.company_id.phone
+        self.website.noels_public_phone = '+1 868 555-0123'
+        apply_listing_details(self.env)
+        self.assertEqual(self.website.noels_public_phone, '+1 868 555-0123')
+        self.assertEqual(self.website.company_id.phone, company_phone)
 
     def test_publishing_and_website_isolation(self):
         public = self.website.with_user(self.website.user_id).with_context(website_id=self.website.id)
@@ -139,6 +159,7 @@ class TestNoelsWebsite(HttpCase):
         self.assertFalse(by_class(private, 'noels-promo-card'))
 
     def test_company_phone_and_desktop_cart_order(self):
+        self.website.noels_public_phone = False  # The normal company fallback remains editable.
         self.website.company_id.phone = '+1 868 555 0199'
         page = html.fromstring(self.url_open('/').content)
         self.assertTrue(page.xpath('//header//a[@href="tel:+1 868 555 0199"]'))

@@ -22,11 +22,10 @@
           <a href="/pharmacy-services#questions">Common questions</a>
         </div>
         <div class="footer-note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>
-          </svg>
-          <p>Here for your health.<br/>Here for you.</p>
-          <span>NOEL’S PHARMACY<br/>&amp; WELLNESS CENTER LTD</span>
+          <h2>Visit us</h2>
+          <p t-if="website.noels_public_address" class="noels-store-address" style="white-space: pre-line" t-field="website.noels_public_address"/>
+          <t t-call="noels_pharmacy_website.noels_phone_link"/>
+          <a t-if="website.noels_public_address" t-att-href="website._noels_directions_url()" class="noels-directions-link" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">↗</span></a>
         </div>
       </div>
       <div class="wrap footer-bottom">
@@ -44,8 +43,9 @@
     </xpath>
   <xpath expr="//header/*[1]" position="before"><t t-call="noels_pharmacy_website.noels_announcement"/></xpath></template>
 <template id="noels_phone_link" name="Noel’s company phone">
-    <a t-if="website.company_id.phone" t-att-href="'tel:' + website.company_id.phone" class="noels-phone-link">
-      <i class="fa fa-phone" aria-hidden="true"/><span class="o_force_ltr" t-field="website.company_id.phone"/>
+    <t t-set="noels_phone" t-value="website.noels_public_phone or website.company_id.phone"/>
+    <a t-if="noels_phone" t-att-href="'tel:' + noels_phone" class="noels-phone-link">
+      <i class="fa fa-phone" aria-hidden="true"/><span class="o_force_ltr" t-out="noels_phone"/>
     </a>
     <a t-else="" href="/visit-noels" class="noels-phone-link">Visit &amp; contact</a>
   </template>
@@ -89,3 +89,4 @@
                         </small>
                     </a>
                     </xpath></template></odoo>
+

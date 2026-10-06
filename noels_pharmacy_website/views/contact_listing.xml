@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="visit_google_contact" model="ir.ui.view">
+        <field name="name">Noel’s store contact and directions</field>
+        <field name="type">qweb</field>
+        <field name="inherit_id" search="[('key', '=', 'noels_pharmacy_website.page_contact'), ('website_id', '=', ref('website.default_website'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@t-field='website.company_id.partner_id']" position="replace">
+                <p t-if="website.noels_public_address" class="noels-store-address" style="white-space: pre-line" t-field="website.noels_public_address"/>
+                <div t-else="" t-field="website.company_id.partner_id" t-options="{'widget': 'contact', 'fields': ['address'], 'no_marker': True}"/>
+                <a t-if="website.noels_public_address" t-att-href="website._noels_directions_url()" class="button noels-directions-link" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">↗</span></a>
+            </xpath>
+            <xpath expr="//p[@t-if='website.company_id.phone']" position="replace">
+                <p><t t-call="noels_pharmacy_website.noels_phone_link"/></p>
+            </xpath>
+        </field>
+    </record>
+</odoo>

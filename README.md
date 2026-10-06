@@ -1,6 +1,6 @@
 # Noel’s Pharmacy — Odoo 19 Community
 
-Fresh website and ecommerce module, version **19.0.2.1.2**, by **Spxcorp Limited**.
+Fresh website and ecommerce module, version **19.0.2.1.3**, by **Spxcorp Limited**.
 
 This edition replaces the previous repository implementation at the owner’s request. The earlier code remains available in Git history. **Use a fresh Odoo 19 database when coming from the old prescription-intake edition. The 2.0 native storefront can be upgraded to 2.1 using the steps below.** It is not an in-place migration of the earlier prescription-intake edition; the migration guard stops that incompatible upgrade before altering its business records.
 
@@ -133,3 +133,21 @@ Pull/redeploy `main`, restart Odoo, then **Upgrade Noel’s Pharmacy — Website
 in Apps and hard-refresh. Existing page edits are preserved; the shared commerce
 blocks are updated. CI covers empty, published, unpublished and private-shop states
 as well as native cart/checkout and the upgrade from the sample catalogue release.
+
+
+## Version 2.1.3 — store phone, address and directions
+
+The owner's Google business listing screenshot supplies **+1 868 750-6635** and
+**38, Chaguanas, Trinidad & Tobago**. The header and footer have tap-to-call links;
+the footer and Visit & Contact page show the address and a Google Maps
+**Get directions** button. The map destination uses the business name and address.
+No unverified street name, map coordinates, opening hours or travel time is added.
+
+Public store details can be changed under **Website → Configuration → Settings →
+Noel’s Pharmacy → Store contact details**. They are separate from the company’s
+billing address. The phone falls back to the company phone if the store phone is
+cleared. Installation and the one-time upgrade seed the listing details; later
+updates preserve edits. The inherited contact view preserves the existing page.
+
+Redeploy `main`, restart Odoo, and **Upgrade Noel’s Pharmacy — Website & Shop**
+in Apps, then hard-refresh.

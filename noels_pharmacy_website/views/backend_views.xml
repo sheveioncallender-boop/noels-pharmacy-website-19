@@ -8,7 +8,11 @@
             <xpath expr="//app[@name='website']" position="inside">
                 <block title="Noel’s Pharmacy" name="noels_settings">
                     <setting string="Noel’s branding" help="Apply the logo colour palette and fonts around Odoo’s native shop, header, cart and checkout."><field name="noels_brand_enabled"/></setting>
-                    <setting string="Opening hours" help="Displayed in the top strip and on the Visit &amp; Contact page. Company address, phone and email use the website company’s contact record."><field name="noels_opening_hours" placeholder="Add confirmed opening hours"/></setting>
+                    <setting string="Opening hours" help="Displayed in the top strip and on the Visit &amp; Contact page."><field name="noels_opening_hours" placeholder="Add confirmed opening hours"/></setting>
+                    <setting string="Store contact details" help="Public storefront details for the header, footer and Visit &amp; Contact page. Directions use the store name and this address. Email uses the company contact record.">
+                        <label for="noels_public_phone"/><field name="noels_public_phone" placeholder="+1 868 750-6635"/>
+                        <label for="noels_public_address"/><field name="noels_public_address" placeholder="Store address"/>
+                    </setting>
                 </block>
             </xpath>
         </field>

@@ -126,6 +126,9 @@ extra featured checkbox. Optional priority fields remain available. Native websi
 access, pricing, product links, cart and checkout remain in effect. Demo products
 stay archived and the sample notice stays removed.
 
+This dynamic homepage bypasses Odoo's full-page HTML cache so publication and
+visitor-specific prices stay current. Other marketing pages retain normal caching.
+
 Pull/redeploy `main`, restart Odoo, then **Upgrade Noel’s Pharmacy — Website & Shop**
 in Apps and hard-refresh. Existing page edits are preserved; the shared commerce
 blocks are updated. CI covers empty, published, unpublished and private-shop states

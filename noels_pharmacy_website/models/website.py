@@ -17,8 +17,8 @@ class Website(models.Model):
             return Category.browse()
         return Category.search(Domain.AND([
             self.website_domain(),
-            [('noels_homepage_featured', '=', True), ('has_published_products', '=', True)],
-        ]), order='sequence, name, id', limit=12)
+            [('has_published_products', '=', True)],
+        ]), order='noels_homepage_featured desc, sequence, name, id', limit=12)
 
     def _noels_featured_products(self):
         self.ensure_one()
@@ -29,12 +29,11 @@ class Website(models.Model):
         # No sudo: normal product/company/website access rules remain authoritative.
         return Product.search(Domain.AND([
             self.sale_product_domain(),
-            [('active', '=', True), ('is_published', '=', True),
-             ('noels_homepage_featured', '=', True)],
-        ]), order='website_sequence, id', limit=8)
+            [('active', '=', True), ('is_published', '=', True)],
+        ]), order='noels_homepage_featured desc, website_sequence, id', limit=8)
 
     def _noels_promo_product(self, category_xmlid):
-        """Promotional cards disappear when their products are unpublished."""
+        """Return a live product; banners use lifestyle imagery when none is available."""
         self.ensure_one()
         Product = self.env['product.template'].with_context(website_id=self.id)
         category = self.env.ref('noels_pharmacy_website.' + category_xmlid, raise_if_not_found=False)

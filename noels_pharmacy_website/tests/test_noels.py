@@ -93,6 +93,51 @@ class TestNoelsWebsite(HttpCase):
         self.assertEqual(checkout.status_code, 200)
         self.assertNotIn('Traceback', checkout.text)
 
+    def test_live_merchandising_empty_publish_and_unpublish(self):
+        self.env['product.template'].search([('is_published', '=', True)]).write({'is_published': False})
+        self.products.noels_homepage_featured = False
+        self.category.noels_homepage_featured = False
+
+        def home():
+            response = self.url_open('/', timeout=60)
+            self.assertEqual(response.status_code, 200)
+            return html.fromstring(response.content)
+
+        def by_class(document, name):
+            return document.xpath('//*[contains(concat(" ", normalize-space(@class), " "), " %s ")]' % name)
+
+        empty = home()
+        self.assertEqual(len(by_class(empty, 'noels-featured-section')), 1)
+        self.assertEqual(len(by_class(empty, 'noels-product-placeholder')), 4)
+        self.assertEqual(len(by_class(empty, 'noels-promo-card')), 2)
+        self.assertEqual(len(by_class(empty, 'noels-promo-lifestyle')), 2)
+        self.assertFalse(by_class(empty, 'noels-product-card'))
+        self.assertFalse(by_class(empty, 'noels-product-price'))
+
+        # Normal Odoo publication is enough: no extra homepage checkbox required.
+        self.product.is_published = True
+        published = home()
+        cards = by_class(published, 'noels-product-card')
+        self.assertEqual(len(cards), 1)
+        self.assertIn(self.product.name, cards[0].text_content())
+        self.assertFalse(by_class(published, 'noels-product-placeholder'))
+        self.assertEqual(len(by_class(published, 'noels-category')), 1)
+        promos = by_class(published, 'noels-promo-card')
+        self.assertEqual(len(promos), 2)
+        self.assertEqual(promos[0].get('href'), self.product.website_url)
+        self.assertEqual(len(by_class(published, 'noels-promo-lifestyle')), 1)
+
+        self.product.is_published = False
+        unpublished = home()
+        self.assertEqual(len(by_class(unpublished, 'noels-product-placeholder')), 4)
+        self.assertEqual(len(by_class(unpublished, 'noels-promo-card')), 2)
+        self.assertNotIn(self.product.name, unpublished.text_content())
+
+        self.website.ecommerce_access = 'logged_in'
+        private = home()
+        self.assertFalse(by_class(private, 'noels-featured-section'))
+        self.assertFalse(by_class(private, 'noels-promo-card'))
+
     def test_company_phone_and_desktop_cart_order(self):
         self.website.company_id.phone = '+1 868 555 0199'
         page = html.fromstring(self.url_open('/').content)

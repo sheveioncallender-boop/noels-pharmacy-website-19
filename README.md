@@ -1,6 +1,6 @@
 # Noel’s Pharmacy — Odoo 19 Community
 
-Fresh website and ecommerce module, version **19.0.2.1.1**, by **Spxcorp Limited**.
+Fresh website and ecommerce module, version **19.0.2.1.2**, by **Spxcorp Limited**.
 
 This edition replaces the previous repository implementation at the owner’s request. The earlier code remains available in Git history. **Use a fresh Odoo 19 database when coming from the old prescription-intake edition. The 2.0 native storefront can be upgraded to 2.1 using the steps below.** It is not an in-place migration of the earlier prescription-intake edition; the migration guard stops that incompatible upgrade before altering its business records.
 
@@ -34,8 +34,8 @@ The module targets `website.default_website` on installation. It does not change
 
 ## Manage the shop normally in Odoo
 
-- Edit products, images, prices, variants and publication from Odoo’s normal product screens. Enable **Featured on Noel’s homepage** on products you want in the homepage selection (up to eight, ordered by website sequence).
-- Edit ecommerce categories, their image and sequence in Odoo. Enable **Featured on Noel’s homepage** for category cards (up to twelve). A category needs a published product to appear to visitors.
+- Edit products, images, prices, variants and publication from Odoo’s normal product screens. Published, active, saleable products appear on the homepage automatically (up to eight). **Prioritise on Noel’s homepage** is optional and moves selected products first; website sequence orders the rest.
+- Edit ecommerce categories, their image and sequence in Odoo. Categories with published products appear automatically (up to twelve). **Prioritise in homepage categories** is optional; category sequence orders the rest.
 - Edit the five marketing pages with the Website editor. Product cards and category cards come from the actual catalogue.
 - For inventory, enable native Track Inventory on your products and receive actual quantities in Odoo.
 - Currency, taxes, payment providers, delivery methods, checkout policy and automatic invoices use your ordinary Odoo settings. No payment gateway or delivery service is fabricated by this module.
@@ -112,3 +112,21 @@ orders stay intact. New installs create no sample products. The sample banner
 notice and badges are removed. The normal photographic banners, real products,
 category setup and native Odoo ecommerce flow remain. Category and product
 sections appear as you publish real items in Odoo.
+
+## Version 2.1.2 — keep the live merchandising layout
+
+The two promotional banners and Everyday favourites section remain visible even
+with an empty catalogue. Banners use the existing lifestyle photographs until a
+published product is available in the Skin Care or Baby Care category. Four neutral
+product slots preserve the grid while empty, without invented items, prices or cart
+buttons. Published products automatically replace these slots.
+
+Normal Odoo publication now fills homepage products and category cards without an
+extra featured checkbox. Optional priority fields remain available. Native website
+access, pricing, product links, cart and checkout remain in effect. Demo products
+stay archived and the sample notice stays removed.
+
+Pull/redeploy `main`, restart Odoo, then **Upgrade Noel’s Pharmacy — Website & Shop**
+in Apps and hard-refresh. Existing page edits are preserved; the shared commerce
+blocks are updated. CI covers empty, published, unpublished and private-shop states
+as well as native cart/checkout and the upgrade from the sample catalogue release.

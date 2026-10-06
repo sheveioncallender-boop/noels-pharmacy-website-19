@@ -216,3 +216,14 @@
 @media (prefers-reduced-motion: reduce) {
     .noels-content .banner-slide, .noels-content .button, .noels-content .noels-product-photo img { transition: none; }
 }
+
+// Keep the merchandising layout while the live catalogue is being populated.
+.noels-content {
+    .noels-product-placeholder { border: 1px solid #e3e8ec; border-radius: 15px; overflow: hidden; background: #fff; }
+    .noels-placeholder-photo { aspect-ratio: 1; display: grid; place-items: center; background: #f7f9fa; color: #c5d6ce; font-size: 42px; }
+    .noels-placeholder-copy { padding: 18px; }
+    .noels-placeholder-copy span { display: block; height: 10px; width: 75%; margin-bottom: 10px; border-radius: 10px; background: #edf1f3; }
+    .noels-placeholder-copy span:last-child { width: 45%; margin-bottom: 0; }
+    .noels-collection-empty { margin: 20px 0 0; color: #596879; text-align: center; font-size: 15px; }
+    .noels-promo-card img.noels-promo-lifestyle { object-fit: cover; mix-blend-mode: normal; border-radius: 14px; }
+}

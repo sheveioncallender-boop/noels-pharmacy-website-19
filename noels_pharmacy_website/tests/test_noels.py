@@ -3,6 +3,7 @@ from lxml import html
 from odoo.tests import HttpCase, tagged
 from odoo.addons.website_sale.tests.common import MockRequest
 from ..hooks import post_init_hook
+from ..cleanup import retire_sample_catalogue
 from ..upgrade import apply_storefront_redesign, REDESIGN_MARKER
 
 
@@ -13,34 +14,43 @@ class TestNoelsWebsite(HttpCase):
         super().setUpClass()
         cls.website = cls.env.ref('website.default_website')
         cls.website.write({'domain': False, 'ecommerce_access': 'everyone'})
-        cls.sample = cls.env.ref('noels_pharmacy_website.sample_vanicream_daily')
         cls.category = cls.env.ref('noels_pharmacy_website.category_1')
+        # Test-only products are rolled back by HttpCase, never installed as data.
+        cls.products = cls.env['product.template'].create([
+            {'name': 'Test catalogue product %s' % number, 'type': 'consu',
+             'list_price': 25.0, 'sale_ok': True, 'is_storable': False,
+             'is_published': True, 'website_id': cls.website.id,
+             'public_categ_ids': [(6, 0, [cls.env.ref('noels_pharmacy_website.category_%s' % number).id])],
+             'noels_homepage_featured': True}
+            for number in range(1, 7)
+        ])
+        cls.product = cls.products[0]
 
     def test_seed_records_and_idempotent_setup(self):
         samples = self.env['product.template'].search([('noels_sample_product', '=', True)])
-        self.assertEqual(len(samples), 12)
-        self.assertTrue(all(p.image_1920 and p.website_description and p.public_categ_ids for p in samples))
+        self.assertEqual(len(samples), 0)
+        self.assertFalse(self.website.noels_catalogue_notice)
         self.assertEqual(self.website.homepage_url, '/noels-home')
         menu_count = self.env['website.menu'].search_count([('website_id', '=', self.website.id)])
-        self.sample.list_price = 72.50
+        self.product.list_price = 72.50
         post_init_hook(self.env)
-        self.assertEqual(self.sample.list_price, 72.50)
+        self.assertEqual(self.product.list_price, 72.50)
         self.assertEqual(self.env['website.menu'].search_count([('website_id', '=', self.website.id)]), menu_count)
 
     def test_publishing_and_website_isolation(self):
         public = self.website.with_user(self.website.user_id).with_context(website_id=self.website.id)
         with MockRequest(public.env, website=public):
-            self.assertIn(self.sample.id, public._noels_featured_products().ids)
-            self.sample.is_published = False
-            self.assertNotIn(self.sample.id, public._noels_featured_products().ids)
-            self.sample.is_published = True
-            self.sample.active = False
-            self.assertNotIn(self.sample.id, public._noels_featured_products().ids)
+            self.assertIn(self.product.id, public._noels_featured_products().ids)
+            self.product.is_published = False
+            self.assertNotIn(self.product.id, public._noels_featured_products().ids)
+            self.product.is_published = True
+            self.product.active = False
+            self.assertNotIn(self.product.id, public._noels_featured_products().ids)
         other = self.env['website'].create({'name': 'Another store', 'company_id': self.website.company_id.id, 'noels_brand_enabled': True})
         other_public = other.with_user(other.user_id).with_context(website_id=other.id)
         with MockRequest(other_public.env, website=other_public):
             self.assertNotIn(self.category.id, other_public._noels_categories().ids)
-            self.assertNotIn(self.sample.id, other_public._noels_featured_products().ids)
+            self.assertNotIn(self.product.id, other_public._noels_featured_products().ids)
 
     def test_empty_categories_and_private_shop(self):
         public = self.website.with_user(self.website.user_id).with_context(website_id=self.website.id)
@@ -54,7 +64,7 @@ class TestNoelsWebsite(HttpCase):
             self.assertFalse(public._noels_categories())
 
     def test_pages_header_and_native_shop(self):
-        for path in ['/', '/pharmacy-services', '/wellness', '/about-noels', '/visit-noels', '/shop', self.sample.website_url]:
+        for path in ['/', '/pharmacy-services', '/wellness', '/about-noels', '/visit-noels', '/shop', self.product.website_url]:
             with self.subTest(path=path):
                 response = self.url_open(path, timeout=60)
                 self.assertEqual(response.status_code, 200, response.text[:1000])
@@ -64,20 +74,21 @@ class TestNoelsWebsite(HttpCase):
                 self.assertFalse(document.xpath('//header//button[contains(@class,"menu-toggle")]'))
                 self.assertTrue(document.xpath('//header//*[contains(concat(" ", @class, " "), " noels-topbar ")]'))
         home = html.fromstring(self.url_open('/').content)
+        self.assertFalse(home.xpath('//*[contains(@class,"noels-catalogue-notice") or contains(@class,"noels-sample-badge")]'))
         self.assertEqual(len(home.xpath('//a[contains(@class,"noels-category")]')), 6)
         self.assertEqual(len(home.xpath('//div[contains(concat(" ",@class," ")," banner-slide ")]')), 3)
 
     def test_native_cart_and_checkout(self):
         self.url_open('/')  # Establish the standard Odoo visitor/session.
         result = self.make_jsonrpc_request('/shop/cart/add', {
-            'product_template_id': self.sample.id,
-            'product_id': self.sample.product_variant_id.id,
+            'product_template_id': self.product.id,
+            'product_id': self.product.product_variant_id.id,
             'quantity': 2,
         }, timeout=60)
         self.assertEqual(result['quantity'], 2)
         cart = self.url_open('/shop/cart', timeout=60)
         self.assertEqual(cart.status_code, 200)
-        self.assertIn(self.sample.name, html.fromstring(cart.content).text_content())
+        self.assertIn(self.product.name, html.fromstring(cart.content).text_content())
         checkout = self.url_open('/shop/checkout', timeout=60)
         self.assertEqual(checkout.status_code, 200)
         self.assertNotIn('Traceback', checkout.text)
@@ -98,8 +109,8 @@ class TestNoelsWebsite(HttpCase):
         old = '<t t-name="noels_pharmacy_website.page_home"><t t-call="website.layout"><div id="wrap">Existing homepage edit</div></t></t>'
         home.arch_db = old
         about_before = about.arch_db
-        self.sample.list_price = 72.50
-        self.sample.is_published = False
+        self.product.list_price = 72.50
+        self.product.is_published = False
         self.env['ir.config_parameter'].sudo().set_param(REDESIGN_MARKER, False)
         apply_storefront_redesign(self.env)
         self.assertIn('noels-home', home.arch_db)
@@ -110,8 +121,8 @@ class TestNoelsWebsite(HttpCase):
         self.assertFalse(backup.active)
         self.assertIn('Existing homepage edit', backup.arch_db)
         self.assertEqual(about.arch_db, about_before)
-        self.assertEqual(self.sample.list_price, 72.50)
-        self.assertFalse(self.sample.is_published)
+        self.assertEqual(self.product.list_price, 72.50)
+        self.assertFalse(self.product.is_published)
         home.arch_db = old
         apply_storefront_redesign(self.env)
         self.assertIn('Existing homepage edit', home.arch_db)
@@ -126,3 +137,24 @@ class TestNoelsWebsite(HttpCase):
             self.assertEqual(response.status_code, 200)
             self.assertNotIn('style compilation failed', response.text.lower())
             self.assertNotIn('sass.compileerror', response.text.lower())
+
+
+    def test_retire_samples_preserves_real_products_and_order_lines(self):
+        sample = self.product.copy({'name': 'Old module sample', 'noels_sample_product': True,
+                                    'noels_homepage_featured': True, 'is_published': True})
+        self.env['ir.model.data'].create({'module': 'noels_pharmacy_website',
+            'name': 'sample_vanicream_daily', 'model': 'product.template',
+            'res_id': sample.id, 'noupdate': True})
+        # An unrelated record marked as a sample is outside this module's ownership.
+        unrelated = self.product.copy({'noels_sample_product': True, 'is_published': True})
+        order = self.env['sale.order'].create({'partner_id': self.env.user.partner_id.id,
+            'order_line': [(0, 0, {'product_id': sample.product_variant_id.id,
+                                  'product_uom_qty': 1, 'price_unit': 25})]})
+        self.website.noels_catalogue_notice = True
+        retire_sample_catalogue(self.env)
+        retire_sample_catalogue(self.env)  # Safe to repeat.
+        self.assertFalse(sample.active or sample.is_published or sample.noels_homepage_featured)
+        self.assertTrue(self.product.active and self.product.is_published)
+        self.assertTrue(unrelated.active and unrelated.is_published)
+        self.assertEqual(order.order_line.product_id, sample.with_context(active_test=False).product_variant_ids)
+        self.assertFalse(self.website.noels_catalogue_notice)

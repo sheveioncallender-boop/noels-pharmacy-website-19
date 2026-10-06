@@ -24,7 +24,7 @@ def post_init_hook(env):
     website.write({
         'name': BRAND_NAME, 'logo': logo,
         'homepage_url': '/noels-home', 'noels_brand_enabled': True,
-        'noels_catalogue_notice': True,
+        'noels_catalogue_notice': False,
     })
     menu_specs = [
         ('shop', 'Shop', '/shop', False, 15, ['/shop']),

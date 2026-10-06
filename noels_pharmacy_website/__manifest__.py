@@ -1,7 +1,7 @@
 {
     'name': "Noel's Pharmacy — Website & Shop",
-    'version': '19.0.2.1.0',
-    'summary': 'Noel’s design, native Odoo eCommerce, category cards and a sample catalogue',
+    'version': '19.0.2.1.1',
+    'summary': 'Noel’s design, native Odoo eCommerce, category cards and your live catalogue',
     'category': 'Website/eCommerce',
     'author': 'Spxcorp Limited',
     'website': 'https://spxcorp.net',

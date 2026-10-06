@@ -58,7 +58,7 @@ for path in (module / 'static/src/img').iterdir():
         assert Image.open(path).format == 'JPEG', path
 catalogue = etree.parse(str(module / 'data/catalog.xml'))
 pages = etree.parse(str(module / 'data/pages.xml'))
-assert len(catalogue.xpath('//record[@model="product.template"]')) == 12
+assert len(catalogue.xpath('//record[@model="product.template"]')) == 0
 assert len(catalogue.xpath('//record[@model="product.public.category"]')) == 6
 assert len(pages.xpath('//record[@model="website.page"]')) == 5
 assert catalogue.xpath('/odoo/data[@noupdate="1"]')
@@ -67,7 +67,8 @@ layout = etree.parse(str(module / 'views/layout.xml'))
 assert not layout.xpath('//header')  # Native header is inherited intact.
 assert not layout.xpath('//xpath[@position="replace" and (@expr="//header" or @expr="//header[@id=\'top\']")]')
 assert not (module / 'controllers').exists()  # No replacement ecommerce routes.
-print('PASS: XML schema, QWeb expressions, Python/JS syntax, SCSS, local assets, native-header boundary, 12 products, 6 categories, 5 one-time pages.')
+print('PASS: XML schema, QWeb expressions, Python/JS syntax, SCSS, local assets, native-header boundary, no seeded products, 6 categories, 5 one-time pages.')
 
 from check_native_templates import validate_native_templates
 validate_native_templates(args.odoo_source, module)
+

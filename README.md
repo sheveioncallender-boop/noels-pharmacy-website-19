@@ -1,6 +1,6 @@
 # Noel’s Pharmacy — Odoo 19 Community
 
-Fresh website and ecommerce module, version **19.0.2.1.0**, by **Spxcorp Limited**.
+Fresh website and ecommerce module, version **19.0.2.1.1**, by **Spxcorp Limited**.
 
 This edition replaces the previous repository implementation at the owner’s request. The earlier code remains available in Git history. **Use a fresh Odoo 19 database when coming from the old prescription-intake edition. The 2.0 native storefront can be upgraded to 2.1 using the steps below.** It is not an in-place migration of the earlier prescription-intake edition; the migration guard stops that incompatible upgrade before altering its business records.
 
@@ -10,11 +10,11 @@ This edition replaces the previous repository implementation at the owner’s re
 - Three rotating photographic hero banners, manual controls, swipe and reduced-motion support.
 - Home, Pharmacy Services, Wellness, About Noel’s, and Visit & Contact pages.
 - Six rounded category cards linked to native Odoo ecommerce categories.
-- Twelve sample products with photographs, descriptions, categories and test prices, using the requested FCP reference catalogue.
+- Your native Odoo product catalogue. Fresh installations do not create sample products.
 - Homepage product prices calculated by Odoo’s visitor pricelist and tax rules. Unpublished/archived products are excluded; empty categories disappear.
 - Odoo’s existing desktop/mobile header, search, customer account, cart, product pages and checkout. This module does not replace their templates or controllers.
-- One-time editable pages and sample catalogue records (`noupdate="1"`). This 2.1 redesign updates the homepage once, with an inactive backup of its previous content; subsequent upgrades preserve editor changes. Product prices and publication choices remain unchanged.
-- Website settings for branding, opening hours, sample notice and bulk unpublishing the sample catalogue.
+- One-time editable pages and sample catalogue records (`noupdate="1"`). This 2.1 redesign updates the homepage once, with an inactive backup of its previous content; subsequent upgrades preserve editor changes. Version 2.1.1 retires the original sample products while preserving real product data.
+- Website settings for branding and opening hours. The sample notice and product badges have been removed.
 
 ## Install on Cloudpepper or an Odoo server
 
@@ -37,9 +37,9 @@ The module targets `website.default_website` on installation. It does not change
 - Edit products, images, prices, variants and publication from Odoo’s normal product screens. Enable **Featured on Noel’s homepage** on products you want in the homepage selection (up to eight, ordered by website sequence).
 - Edit ecommerce categories, their image and sequence in Odoo. Enable **Featured on Noel’s homepage** for category cards (up to twelve). A category needs a published product to appear to visitors.
 - Edit the five marketing pages with the Website editor. Product cards and category cards come from the actual catalogue.
-- Sample products are saleable Goods with inventory tracking disabled so you can test a cart without creating fictitious stock. For real inventory, enable native Track Inventory and receive the actual quantities in Odoo.
+- For inventory, enable native Track Inventory on your products and receive actual quantities in Odoo.
 - Currency, taxes, payment providers, delivery methods, checkout policy and automatic invoices use your ordinary Odoo settings. No payment gateway or delivery service is fabricated by this module.
-- The sample notice is enabled initially. Review/replace the sample catalogue and test prices, then disable the notice in Website settings. The **Unpublish sample products** button keeps those records and existing orders in the backend.
+- Upgrading to 2.1.1 unpublishes and archives the original module-owned sample products. Archived records preserve references from any existing orders. Real products are unchanged.
 
 The fresh edition does not implement prescription uploads or a custom customer portal. Contact enquiries and customer orders use Odoo’s `/contactus` and `/my/orders` flows.
 
@@ -75,7 +75,7 @@ Code: LGPL-3.0-or-later. Photographs are real stock photography; pictured people
 - Shared Community brand variables make the backend/editor toolbar blue as well.
   Page/header styling and header ordering are conditional on Noel’s branding;
   the shared backend brand colour applies database-wide.
-- Original Noel’s logo, HD marketing photographs and sample catalogue are retained.
+- Original Noel’s logo and HD marketing photographs are retained.
   Product images use Odoo’s image_1024 endpoint; larger uploads improve source quality.
 
 ### Upgrade an existing 2.0 storefront
@@ -95,7 +95,20 @@ The old prescription-intake edition remains protected by its existing migration
 block. These steps apply to the 2.0 native storefront, not that earlier edition.
 
 Validation covers real Odoo template inheritance, SCSS compilation and HTTP/cart
-checks in CI. CI also installs the previous 2.0 release, changes a product and the
-homepage, then verifies the 2.1 migration keeps those business settings and a
-recoverable copy of the old homepage. The local visual preview could not be opened
+checks in CI. CI also installs the previous 2.1.0 release, creates a real product and an order
+referencing a sample, and edits pages. It verifies the 2.1.1 upgrade archives the
+12 samples while preserving the real product, order references and page edits. The local visual preview could not be opened
 in the available browser; no live customer instance has been changed or tested.
+
+
+## Version 2.1.1 — remove the sample catalogue
+
+Pull/redeploy `main` in Cloudpepper, restart Odoo, then open Apps and **Upgrade
+Noel’s Pharmacy — Website & Shop**. Hard-refresh the website afterward. A code
+redeploy alone does not run the product cleanup migration.
+
+The original 12 sample items are unpublished and archived, not deleted, so past
+orders stay intact. New installs create no sample products. The sample banner
+notice and badges are removed. The normal photographic banners, real products,
+category setup and native Odoo ecommerce flow remain. Category and product
+sections appear as you publish real items in Odoo.

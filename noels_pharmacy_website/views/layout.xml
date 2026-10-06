@@ -42,9 +42,6 @@
     <xpath expr="//footer[@id='bottom']" position="inside">
       <t t-if="website.noels_brand_enabled and not no_footer" t-call="noels_pharmacy_website.noels_footer"/>
     </xpath>
-    <xpath expr="//div[@id='wrapwrap']/main" position="before">
-      <div t-if="website.noels_brand_enabled and website.noels_catalogue_notice" class="noels-catalogue-notice" role="note">Sample catalogue — products and prices are for website testing.</div>
-    </xpath>
   <xpath expr="//header/*[1]" position="before"><t t-call="noels_pharmacy_website.noels_announcement"/></xpath></template>
 <template id="noels_phone_link" name="Noel’s company phone">
     <a t-if="website.company_id.phone" t-att-href="'tel:' + website.company_id.phone" class="noels-phone-link">
